@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ArrowRight, Search, CalendarDays, MapPin, Sparkles, GraduationCap, Users, ShieldCheck } from 'lucide-react';
 import { useEvents } from '../../context/EventContext.jsx';
 import { EventCard } from './components/EventCard.jsx';
-import heroPoster from '../../assets/univents-sky.png';
 
 const HERO_VIDEO_SRC = '/videos/anime-sky.mp4';
 
@@ -33,22 +32,18 @@ export function HomePage() {
   return (
     <div className="home-page">
       <section className="hero" aria-labelledby="home-hero-title">
-        <img className="hero__poster" src={heroPoster} alt="" aria-hidden="true" fetchPriority="high" />
-        {HERO_VIDEO_SRC && !prefersReducedMotion && (
-          <video
-            className="hero__video"
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="metadata"
-            poster={heroPoster}
-            aria-hidden="true"
-            tabIndex={-1}
-          >
-            <source src={HERO_VIDEO_SRC} type="video/mp4" />
-          </video>
-        )}
+        <video
+          className="hero__video"
+          autoPlay={!prefersReducedMotion}
+          muted
+          loop={!prefersReducedMotion}
+          playsInline
+          preload={prefersReducedMotion ? 'auto' : 'metadata'}
+          aria-hidden="true"
+          tabIndex={-1}
+        >
+          <source src={HERO_VIDEO_SRC} type="video/mp4" />
+        </video>
         <div className="hero__overlay" aria-hidden="true" />
         <div className="hero__content">
           <p className="hero__eyebrow"><Sparkles size={15} /> THE CAMPUS EXPERIENCE</p>

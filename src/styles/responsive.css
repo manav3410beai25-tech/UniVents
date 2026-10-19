@@ -12,6 +12,7 @@
   body { padding-bottom: calc(84px + env(safe-area-inset-bottom)); }
   .public-navbar__inner { display: flex !important; align-items: center; justify-content: space-between; gap: 12px; padding-inline: 16px; }
   .public-navbar__inner > a { flex: none; gap: 8px; }
+  .public-header .brand-mark { width: 34px; height: 34px; }
   .public-brand__tagline { display: none; }
   .public-navbar__actions { display: flex; flex: none; align-items: center; justify-self: auto; gap: 0 !important; margin-left: auto; }
   .public-navbar__actions > :not(.mobile-menu-toggle) { display: none !important; }

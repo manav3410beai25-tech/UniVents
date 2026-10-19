@@ -115,7 +115,7 @@ export function SignupPage() {
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="e.g. Sam Taylor"
+            placeholder="e.g. Manav"
             required
           />
 
@@ -124,7 +124,7 @@ export function SignupPage() {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="e.g. sam.taylor@university.edu"
+            placeholder="manav@gmail.com"
             required
           />
 

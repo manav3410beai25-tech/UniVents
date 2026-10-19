@@ -110,7 +110,7 @@ export function CertificateModal({ isOpen, onClose, studentName, eventTitle, eve
             </div>
 
             <div style={{ textAlign: 'right' }}>
-              <div style={{ fontWeight: 700, color: '#1e293b' }}>Dr. Marcus Vance</div>
+              <div style={{ fontWeight: 700, color: '#1e293b' }}>Yashveer Singh</div>
               <div>Office of Student Affairs</div>
             </div>
           </div>

@@ -28,7 +28,6 @@ import { useNotifications } from '../../context/NotificationContext.jsx';
 import { resetDemoData } from '../../services/storageService.js';
 import { ConfirmDialog } from '../ui/ConfirmDialog.jsx';
 import { useToast } from '../ui/Toast.jsx';
-import univentsMark from '../../assets/univents-mark.svg';
 import { MobileBottomNav } from './MobileBottomNav.jsx';
 
 export function DashboardLayout() {
@@ -106,7 +105,9 @@ export function DashboardLayout() {
           {/* Logo */}
           <div className="flex items-center justify-between px-2">
             <Link to="/" className="flex items-center gap-2" style={{ textDecoration: 'none' }}>
-              <img src={univentsMark} alt="" width="34" height="34" className="brand-mark" />
+              <span className="brand-mark" aria-hidden="true">
+                <img src="/uselogo.jpg" alt="" className="brand-mark__image" />
+              </span>
               <div className="flex flex-col">
                 <span style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--text-main)', lineHeight: 1 }}>
                   Univents

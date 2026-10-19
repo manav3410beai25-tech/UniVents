@@ -14,7 +14,6 @@ import {
   Layers,
   GraduationCap
 } from 'lucide-react';
-import univentsMark from '../../assets/univents-mark.svg';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { useTheme } from '../../context/ThemeContext.jsx';
 import { useNotifications } from '../../context/NotificationContext.jsx';
@@ -63,10 +62,12 @@ export function PublicNavbar() {
         <div className="container h-full flex items-center justify-between public-navbar__inner">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2" style={{ textDecoration: 'none' }}>
-            <img src={univentsMark} alt="" width="38" height="38" className="brand-mark" />
+            <span className="brand-mark" aria-hidden="true">
+              <img src="/uselogo.jpg" alt="" className="brand-mark__image" />
+            </span>
             <div className="flex flex-col">
               <span style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-main)', letterSpacing: '-0.02em', lineHeight: 1.1 }}>
-                Univents
+                UniVents
               </span>
               <span className="text-xs text-secondary public-brand__tagline" style={{ fontWeight: 500 }}>
                 One Campus. Every Event.
@@ -256,7 +257,9 @@ export function PublicFooter() {
         >
           <div>
             <div className="flex items-center gap-2" style={{ marginBottom: '0.75rem' }}>
-              <img src={univentsMark} alt="" width="32" height="32" className="brand-mark" />
+              <span className="brand-mark" aria-hidden="true">
+                <img src="/uselogo.jpg" alt="" className="brand-mark__image" />
+              </span>
               <span style={{ fontSize: '1.15rem', fontWeight: 800 }}>Univents</span>
             </div>
             <p className="text-sm text-secondary" style={{ maxWidth: 280, lineHeight: 1.6 }}>

@@ -1,17 +1,22 @@
 import { DEMO_ACCOUNTS } from './demoAccounts.js';
 
+function seedDemoAccount(id, role, interests, createdAt) {
+  const account = DEMO_ACCOUNTS.find((demoAccount) => demoAccount.role === role);
+  return {
+    id,
+    name: account.name,
+    email: account.email,
+    password: account.password,
+    role: account.role,
+    department: account.department,
+    avatarUrl: account.avatarUrl,
+    interests,
+    createdAt,
+  };
+}
+
 export const SEED_USERS = [
-  {
-    id: 'user_student_1',
-    name: 'Alex Rivera',
-    email: 'alex.rivera@university.edu',
-    password: 'password123',
-    role: 'student',
-    department: 'Computer Science',
-    avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-    interests: ['Technical', 'Hackathons', 'Design', 'Workshops'],
-    createdAt: '2026-08-15T09:00:00Z',
-  },
+  seedDemoAccount('user_student_1', 'student', ['Technical', 'Hackathons', 'Design', 'Workshops'], '2026-08-15T09:00:00Z'),
   {
     id: 'user_student_2',
     name: 'Jordan Chen',
@@ -23,17 +28,7 @@ export const SEED_USERS = [
     interests: ['Career', 'Sports', 'Cultural'],
     createdAt: '2026-08-20T10:30:00Z',
   },
-  {
-    id: 'user_organizer_1',
-    name: 'Elena Rostova',
-    email: 'elena.rostova@university.edu',
-    password: 'password123',
-    role: 'organizer',
-    department: 'Engineering Student Council',
-    avatarUrl: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&auto=format&fit=crop&q=80',
-    interests: ['Technical', 'Workshops', 'Hackathons'],
-    createdAt: '2026-07-10T11:00:00Z',
-  },
+  seedDemoAccount('user_organizer_1', 'organizer', ['Technical', 'Workshops', 'Hackathons'], '2026-07-10T11:00:00Z'),
   {
     id: 'user_organizer_2',
     name: 'David Okafor',
@@ -45,17 +40,7 @@ export const SEED_USERS = [
     interests: ['Cultural', 'Design', 'Sports'],
     createdAt: '2026-07-15T14:20:00Z',
   },
-  {
-    id: 'user_admin_1',
-    name: 'Dr. Marcus Vance',
-    email: 'marcus.vance@university.edu',
-    password: 'password123',
-    role: 'admin',
-    department: 'Office of Student Affairs',
-    avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
-    interests: ['Administration', 'Policy'],
-    createdAt: '2026-06-01T08:00:00Z',
-  },
+  seedDemoAccount('user_admin_1', 'admin', ['Administration', 'Policy'], '2026-06-01T08:00:00Z'),
 ];
 
 export const SEED_CATEGORIES = [
@@ -357,7 +342,7 @@ export const SEED_EVENTS = [
 ];
 
 export const SEED_REGISTRATIONS = [
-  // Seeded Attended Event for Alex Rivera (Student demo user)
+  // Seeded Attended Event for Manav Arora (Student demo user)
   {
     id: 'reg_alex_past',
     eventId: 'evt_past_web3',

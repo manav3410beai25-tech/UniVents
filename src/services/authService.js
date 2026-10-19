@@ -1,5 +1,6 @@
 import { STORAGE_KEYS, getStoredItem, setStoredItem } from './storageService.js';
 import { generateId } from '../utils/formatters.js';
+import { DEMO_ACCOUNTS } from '../data/demoAccounts.js';
 
 export const authService = {
   getUsers() {
@@ -26,14 +27,23 @@ export const authService = {
     if (!user) {
       throw new Error('Invalid email or password. Please check your credentials or pick a demo account.');
     }
+    const demoAccount = DEMO_ACCOUNTS.find((account) => account.email.toLowerCase() === user.email.toLowerCase());
+    const sessionUser = demoAccount
+      ? { ...user, name: demoAccount.name, avatarUrl: demoAccount.avatarUrl }
+      : user;
+    if (sessionUser !== user) {
+      const userIndex = users.findIndex((storedUser) => storedUser.id === user.id);
+      users[userIndex] = sessionUser;
+      setStoredItem(STORAGE_KEYS.USERS, users);
+    }
     const sessionData = {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      department: user.department,
-      avatarUrl: user.avatarUrl,
-      interests: user.interests || [],
+      id: sessionUser.id,
+      name: sessionUser.name,
+      email: sessionUser.email,
+      role: sessionUser.role,
+      department: sessionUser.department,
+      avatarUrl: sessionUser.avatarUrl,
+      interests: sessionUser.interests || [],
     };
     this.setCurrentSession(sessionData);
     return sessionData;

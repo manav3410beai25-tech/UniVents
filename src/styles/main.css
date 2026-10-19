@@ -274,7 +274,17 @@ a:hover { color: var(--primary-hover); }
 :focus-visible { outline: 3px solid var(--border-focus); outline-offset: 3px; }
 
 .container { max-width: var(--max-width); }
-.brand-mark { display: block; flex: none; width: 38px; height: 38px; object-fit: contain; }
+.brand-mark {
+  display: block;
+  flex: none;
+  width: 38px;
+  height: 38px;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #050505;
+}
+.brand-mark__image { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center; }
 .card {
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-xs);

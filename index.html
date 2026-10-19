@@ -2,15 +2,94 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/jpeg" href="/uselogo.jpg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Univents — One Campus. Every Event.</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+      #root { min-height: 100vh; }
+      .intro-loader {
+        position: fixed;
+        z-index: 9999;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+        color: #fff;
+        background: radial-gradient(ellipse at 50% 45%, #263b5b 0%, #101a2c 50%, #070b14 100%);
+        font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+        opacity: 1;
+        transition: opacity 650ms ease, visibility 650ms ease;
+      }
+      .intro-loader.is-leaving { opacity: 0; visibility: hidden; pointer-events: none; }
+      .intro-loader__video, .intro-loader::after { position: absolute; inset: 0; width: 100%; height: 100%; }
+      .intro-loader__video { z-index: 0; object-fit: cover; object-position: center; }
+      .intro-loader__video.is-unavailable { display: none; }
+      .intro-loader::after {
+        z-index: 1;
+        content: "";
+        background: linear-gradient(180deg, rgb(4 10 22 / 24%), rgb(4 10 22 / 42%) 55%, rgb(4 10 22 / 72%));
+      }
+      .intro-loader__glass {
+        position: relative;
+        z-index: 2;
+        width: min(88vw, 420px);
+        padding: clamp(2rem, 8vw, 3.25rem) 2rem;
+        text-align: center;
+        border: 1px solid rgb(255 255 255 / 25%);
+        border-radius: 30px;
+        background: linear-gradient(145deg, rgb(255 255 255 / 19%), rgb(255 255 255 / 7%));
+        box-shadow: 0 24px 80px rgb(0 0 0 / 24%), inset 0 1px 0 rgb(255 255 255 / 25%);
+        -webkit-backdrop-filter: blur(20px) saturate(145%);
+        backdrop-filter: blur(20px) saturate(145%);
+      }
+      .intro-loader__logo {
+        display: block;
+        width: clamp(48px, 12vw, 58px);
+        aspect-ratio: 1;
+        margin: 0 auto 1rem;
+        overflow: hidden;
+        border-radius: 10px;
+        background: #050505;
+      }
+      .intro-loader__logo img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center; }
+      .intro-loader__brand { margin: 0; font-size: clamp(2.25rem, 9vw, 3.25rem); font-weight: 800; letter-spacing: -0.06em; }
+      .intro-loader__tagline { margin: 0.65rem 0 1.75rem; color: rgb(255 255 255 / 80%); font-size: 0.95rem; }
+      .intro-loader__track { height: 3px; overflow: hidden; border-radius: 99px; background: rgb(255 255 255 / 24%); }
+      .intro-loader__progress { width: 100%; height: 100%; transform: scaleX(0); transform-origin: left; border-radius: inherit; background: #fff; animation: intro-load 3s linear forwards; }
+      @keyframes intro-load { to { transform: scaleX(1); } }
+      @media (prefers-reduced-motion: reduce) {
+        .intro-loader, .intro-loader.is-leaving { transition: none; }
+        .intro-loader__progress { animation: none; transform: scaleX(1); }
+      }
+    </style>
   </head>
   <body>
+    <div class="intro-loader" id="intro-loader" role="status" aria-label="Loading UniVents">
+      <video class="intro-loader__video" autoplay muted playsinline aria-hidden="true">
+        <source src="/videos/transition.mp4" type="video/mp4" />
+      </video>
+      <div class="intro-loader__glass">
+        <span class="intro-loader__logo" aria-hidden="true"><img src="/uselogo.jpg" alt="" /></span>
+        <h1 class="intro-loader__brand">UniVents</h1>
+        <p class="intro-loader__tagline">One Campus. Every Event.</p>
+        <div class="intro-loader__track" aria-hidden="true"><div class="intro-loader__progress"></div></div>
+      </div>
+    </div>
     <div id="root"></div>
+    <script>
+      (() => {
+        const loader = document.getElementById('intro-loader');
+        const video = loader.querySelector('video');
+        video.addEventListener('error', () => video.classList.add('is-unavailable'));
+        window.setTimeout(() => {
+          loader.classList.add('is-leaving');
+          window.setTimeout(() => loader.remove(), 650);
+        }, 3000);
+      })();
+    </script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

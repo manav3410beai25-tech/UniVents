@@ -142,7 +142,37 @@ export function LoginPage() {
                       </div>
                     </div>
                   </div>
-                  <ArrowRight size={15} color="var(--text-muted)" />
+                  <div className="flex items-center gap-2">
+                    <div
+                      style={{
+                        position: 'relative',
+                        width: 40,
+                        height: 40,
+                        flex: 'none',
+                        overflow: 'hidden',
+                        borderRadius: '50%',
+                        backgroundColor: 'var(--primary-light)',
+                        display: 'grid',
+                        placeItems: 'center',
+                        color: 'var(--primary)',
+                        fontWeight: 700,
+                        fontSize: '0.75rem',
+                      }}
+                    >
+                      <span aria-hidden="true">
+                        {acc.name.split(/\s+/).map((part) => part[0]).slice(0, 2).join('')}
+                      </span>
+                      {acc.avatarUrl && (
+                        <img
+                          src={acc.avatarUrl}
+                          alt={`${acc.name} profile photo`}
+                          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+                          onError={(event) => { event.currentTarget.style.display = 'none'; }}
+                        />
+                      )}
+                    </div>
+                    <ArrowRight size={15} color="var(--text-muted)" />
+                  </div>
                 </button>
               );
             })}
@@ -176,7 +206,7 @@ export function LoginPage() {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="e.g. alex.rivera@university.edu"
+            placeholder="manav@gmail.com"
             required
           />
 
