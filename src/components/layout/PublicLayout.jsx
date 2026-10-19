@@ -1,0 +1,17 @@
+import React from 'react';
+import { Outlet } from 'react-router-dom';
+import { PublicNavbar, PublicFooter } from './PublicNavbar.jsx';
+import { MobileBottomNav } from './MobileBottomNav.jsx';
+
+export function PublicLayout() {
+  return (
+    <div className="flex flex-col min-h-screen">
+      <PublicNavbar />
+      <main className="flex-1">
+        <Outlet />
+      </main>
+      <PublicFooter />
+      <MobileBottomNav />
+    </div>
+  );
+}

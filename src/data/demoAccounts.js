@@ -1,0 +1,32 @@
+export const DEMO_ACCOUNTS = [
+  {
+    role: 'student',
+    name: 'Alex Rivera',
+    email: 'alex.rivera@university.edu',
+    password: 'password123',
+    department: 'Computer Science',
+    interests: ['AI & Robotics', 'Hackathons', 'Design', 'Web Development'],
+    avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+    description: 'Junior CS Major passionate about AI and collegiate hackathons.',
+  },
+  {
+    role: 'organizer',
+    name: 'Elena Rostova',
+    email: 'elena.rostova@university.edu',
+    password: 'password123',
+    department: 'Engineering Student Council',
+    interests: ['Technology', 'Workshops', 'Leadership'],
+    avatarUrl: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&auto=format&fit=crop&q=80',
+    description: 'Vice President of Events for Engineering Student Council.',
+  },
+  {
+    role: 'admin',
+    name: 'Dr. Marcus Vance',
+    email: 'marcus.vance@university.edu',
+    password: 'password123',
+    department: 'Office of Student Affairs',
+    interests: ['Administration', 'Campus Life', 'Policy'],
+    avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+    description: 'Director of Student Engagement and Campus Activities.',
+  },
+];
