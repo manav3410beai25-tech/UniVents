@@ -82,12 +82,15 @@
     <script>
       (() => {
         const loader = document.getElementById('intro-loader');
-        const video = loader.querySelector('video');
-        video.addEventListener('error', () => video.classList.add('is-unavailable'));
+        if (!loader) return;
+
         window.setTimeout(() => {
           loader.classList.add('is-leaving');
           window.setTimeout(() => loader.remove(), 650);
         }, 3000);
+
+        const video = loader.querySelector('video');
+        video?.addEventListener('error', () => video.classList.add('is-unavailable'));
       })();
     </script>
     <script type="module" src="/src/main.jsx"></script>
