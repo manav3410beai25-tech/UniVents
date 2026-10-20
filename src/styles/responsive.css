@@ -63,3 +63,11 @@
 @media (min-width: 768px) {
   #desktop-nav { display: flex !important; }
 }
+
+@media (max-width: 767px) {
+  [data-theme='dark'] .mobile-bottom-nav { border-color: rgba(148,190,220,.2); background: rgba(13,20,34,.9); box-shadow: 0 10px 32px rgba(0,0,0,.4); }
+  [data-theme='dark'] .mobile-bottom-nav__item { color: #a7b5c7; }
+  [data-theme='dark'] .mobile-bottom-nav__item.is-active { background: rgba(56,169,232,.17); color: #83cdf4; }
+  [data-theme='dark'] .mobile-nav { border-color: var(--border-color); background: rgba(13,20,34,.98); box-shadow: var(--shadow-lg); }
+  [data-theme='dark'] .mobile-nav__utilities button { border-color: var(--border-color); background: var(--bg-surface); color: var(--text-secondary); }
+}

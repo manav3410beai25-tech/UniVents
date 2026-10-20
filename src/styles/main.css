@@ -545,3 +545,63 @@ tr:last-child td { border-bottom: 0; }
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
   .hero__video { display: none; }
 }
+
+/* Dark theme only: premium campus palette and glass surfaces. */
+[data-theme='dark'] body { background: var(--bg-page); color: var(--text-main); }
+[data-theme='dark'] ::selection { color: #f4f8fc; background: rgba(56,169,232,.34); }
+[data-theme='dark'] .btn-primary { background: linear-gradient(135deg, #38a9e8, #1677c8); color: #fff; box-shadow: 0 6px 18px rgba(22,119,200,.22); }
+[data-theme='dark'] .btn-primary:hover { background: linear-gradient(135deg, #66c2f2, #238bd4); }
+[data-theme='dark'] .card { border-color: var(--border-color); box-shadow: var(--shadow-sm); }
+[data-theme='dark'] .card:hover { box-shadow: var(--shadow-md); }
+[data-theme='dark'] .dashboard-layout .card, [data-theme='dark'] .dashboard-layout [class*='card'] { border-color: var(--border-color); box-shadow: 0 6px 24px rgba(0,0,0,.2); }
+[data-theme='dark'] .event-grid .card { border-color: var(--border-color); box-shadow: 0 10px 28px rgba(0,0,0,.24); }
+[data-theme='dark'] .event-grid .card:hover { border-color: rgba(56,169,232,.34); box-shadow: 0 16px 36px rgba(0,0,0,.32), 0 0 22px rgba(56,169,232,.08); }
+[data-theme='dark'] .event-grid .card > div:first-child { background: #17263a !important; }
+[data-theme='dark'] header.public-header { background-color: rgba(8,13,22,.76) !important; border-bottom-color: rgba(148,190,220,.14) !important; box-shadow: 0 8px 24px rgba(0,0,0,.12); -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); }
+[data-theme='dark'] #desktop-nav { background: rgba(18,28,43,.78); border-color: rgba(148,190,220,.18); box-shadow: 0 5px 18px rgba(0,0,0,.22); }
+[data-theme='dark'] #desktop-nav a[aria-current='page'] { color: #9bd8f8; background: rgba(56,169,232,.16); }
+[data-theme='dark'] .public-header .btn-ghost { color: var(--text-secondary); }
+[data-theme='dark'] .public-header .btn-ghost:hover { color: var(--text-main); background: var(--bg-surface-hover); }
+[data-theme='dark'] .public-header .btn-secondary { border-color: var(--border-color); background: rgba(18,28,43,.72); color: var(--text-main); }
+[data-theme='dark'] .hero { color: #f4f8fc; background: #080d16; }
+[data-theme='dark'] .hero__overlay { background: linear-gradient(180deg, rgba(5,10,18,.46), rgba(5,10,18,.28) 40%, rgba(8,13,22,.92)), radial-gradient(ellipse at 50% 34%, rgba(22,119,200,.18), transparent 54%); }
+[data-theme='dark'] .hero__eyebrow { color: #9bd8f8; }
+[data-theme='dark'] .hero__content h1 { color: #f4f8fc; }
+[data-theme='dark'] .hero__content h1 span { color: #b9e4fb; }
+[data-theme='dark'] .hero__description { color: #c2cede; }
+[data-theme='dark'] .hero__cta { background: linear-gradient(135deg, #38a9e8, #1677c8); color: #fff; box-shadow: 0 10px 28px rgba(22,119,200,.3); }
+[data-theme='dark'] .hero__cta:hover { background: linear-gradient(135deg, #66c2f2, #238bd4); color: #fff; }
+[data-theme='dark'] .hero__secondary { border-color: rgba(188,218,238,.32); color: #f4f8fc; background: rgba(12,22,35,.64); box-shadow: 0 5px 18px rgba(0,0,0,.2); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
+[data-theme='dark'] .hero__secondary:hover { border-color: rgba(122,198,239,.65); color: #fff; background: rgba(18,39,60,.78); }
+[data-theme='dark'] .event-preview { background: rgba(13,20,34,.97); border-color: rgba(148,190,220,.18); box-shadow: 0 -12px 45px rgba(0,0,0,.32); }
+[data-theme='dark'] .preview-kicker, [data-theme='dark'] .section-kicker { color: #69b9e7; }
+[data-theme='dark'] .event-preview h2, [data-theme='dark'] .preview-event__copy strong { color: #f4f8fc; }
+[data-theme='dark'] .preview-link, [data-theme='dark'] .section-more { color: #d4e1ee; }
+[data-theme='dark'] .preview-event { border-color: rgba(148,190,220,.14); background: #121c2b; color: #f4f8fc; }
+[data-theme='dark'] .preview-event:hover { color: #fff; border-color: rgba(56,169,232,.5); }
+[data-theme='dark'] .preview-event__copy small { color: #a7b5c7; }
+[data-theme='dark'] .preview-event__arrow { color: #91a5bb; }
+[data-theme='dark'] .preview-empty { color: #a7b5c7; }
+[data-theme='dark'] .discovery-band, [data-theme='dark'] .event-section--upcoming { background: #0d1422; }
+[data-theme='dark'] .event-section--featured { background: #080d16; }
+[data-theme='dark'] .home-search { border-color: var(--border-color); background: #121c2b; box-shadow: 0 8px 30px rgba(0,0,0,.2); }
+[data-theme='dark'] .home-search > svg { color: #91a5bb; }
+[data-theme='dark'] .home-search input { color: #f4f8fc; }
+[data-theme='dark'] .home-search input::placeholder { color: #8192a8; }
+[data-theme='dark'] .home-search button { background: linear-gradient(135deg, #38a9e8, #1677c8); color: #fff; }
+[data-theme='dark'] .category-chip { border-color: var(--border-color); background: #121c2b; color: #c2d0df; }
+[data-theme='dark'] .category-chip:hover { border-color: rgba(56,169,232,.55); background: #17263a; color: #f4f8fc; }
+[data-theme='dark'] .category-chip--all { border-color: #1677c8; background: #1677c8; color: #fff; }
+[data-theme='dark'] .section-heading h2 { color: #f4f8fc; }
+[data-theme='dark'] .section-heading p { color: #a7b5c7; }
+[data-theme='dark'] .event-empty { border-color: rgba(148,190,220,.25); color: #a7b5c7; }
+[data-theme='dark'] .campus-section { background: #0a111d; }
+[data-theme='dark'] .campus-intro p, [data-theme='dark'] .campus-feature p { color: #a7b5c7; }
+[data-theme='dark'] .campus-feature { border-color: rgba(148,190,220,.16); background: #121c2b; box-shadow: 0 12px 30px rgba(0,0,0,.22); }
+[data-theme='dark'] .campus-feature__icon { background: rgba(56,169,232,.15); color: #70c5f3; }
+[data-theme='dark'] .campus-feature a { color: #70c5f3; }
+[data-theme='dark'] .dashboard-sidebar nav a[aria-current='page'] { color: #fff !important; background: #1677c8 !important; box-shadow: 0 6px 18px rgba(22,119,200,.22) !important; }
+[data-theme='dark'] .dashboard-sidebar nav a:hover:not([aria-current='page']) { background: var(--bg-surface-hover) !important; }
+[data-theme='dark'] table { background: var(--bg-surface); color: var(--text-main); }
+[data-theme='dark'] .dashboard-layout button[style*="#ffffff"] { background-color: var(--primary-light) !important; color: var(--link-color) !important; }
+[data-theme='dark'] [role='dialog'] { border-color: var(--border-color); box-shadow: var(--shadow-xl); }

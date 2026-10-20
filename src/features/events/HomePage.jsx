@@ -3,11 +3,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ArrowRight, Search, CalendarDays, MapPin, Sparkles, GraduationCap, Users, ShieldCheck } from 'lucide-react';
 import { useEvents } from '../../context/EventContext.jsx';
 import { EventCard } from './components/EventCard.jsx';
+import { useTheme } from '../../context/ThemeContext.jsx';
 
-const HERO_VIDEO_SRC = '/videos/anime-sky.mp4';
+const LIGHT_HERO_VIDEO_SRC = '/videos/anime-sky.mp4';
+const DARK_HERO_VIDEO_SRC = '/videos/darkbackground.mp4';
 
 export function HomePage() {
   const { events, categories } = useEvents();
+  const { isDark } = useTheme();
   const navigate = useNavigate();
   const [query, setQuery] = useState('');
   const [currentTime, setCurrentTime] = useState(0);
@@ -33,6 +36,7 @@ export function HomePage() {
     <div className="home-page">
       <section className="hero" aria-labelledby="home-hero-title">
         <video
+          key={isDark ? 'dark' : 'light'}
           className="hero__video"
           autoPlay={!prefersReducedMotion}
           muted
@@ -42,7 +46,7 @@ export function HomePage() {
           aria-hidden="true"
           tabIndex={-1}
         >
-          <source src={HERO_VIDEO_SRC} type="video/mp4" />
+          <source src={isDark ? DARK_HERO_VIDEO_SRC : LIGHT_HERO_VIDEO_SRC} type="video/mp4" />
         </video>
         <div className="hero__overlay" aria-hidden="true" />
         <div className="hero__content">
