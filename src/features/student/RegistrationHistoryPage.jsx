@@ -141,7 +141,7 @@ export function RegistrationHistoryPage() {
           title="No registration records"
           description={`You have no records matching the "${filter}" filter.`}
           actionLabel="Explore Events"
-          onAction={() => (window.location.href = '/events')}
+          onAction={() => (window.location.href = `${import.meta.env.BASE_URL}events`)}
         />
       )}
 

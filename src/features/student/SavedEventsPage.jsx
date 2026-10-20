@@ -38,7 +38,7 @@ export function SavedEventsPage() {
           title="No saved events yet"
           description="Click the bookmark icon on any campus event card or details page to add it to your saved list."
           actionLabel="Explore Events"
-          onAction={() => (window.location.href = '/events')}
+          onAction={() => (window.location.href = `${import.meta.env.BASE_URL}events`)}
         />
       )}
     </div>

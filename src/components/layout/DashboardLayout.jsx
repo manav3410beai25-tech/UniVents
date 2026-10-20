@@ -44,7 +44,7 @@ export function DashboardLayout() {
     resetDemoData();
     toast.success('Demo data restored to initial sample state.');
     setTimeout(() => {
-      window.location.href = '/';
+      window.location.href = import.meta.env.BASE_URL;
     }, 400);
   };
 
@@ -106,7 +106,7 @@ export function DashboardLayout() {
           <div className="flex items-center justify-between px-2">
             <Link to="/" className="flex items-center gap-2" style={{ textDecoration: 'none' }}>
               <span className="brand-mark" aria-hidden="true">
-                <img src="/uselogo.jpg" alt="" className="brand-mark__image" />
+                <img src={`${import.meta.env.BASE_URL}uselogo.jpg`} alt="" className="brand-mark__image" />
               </span>
               <div className="flex flex-col">
                 <span style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--text-main)', lineHeight: 1 }}>

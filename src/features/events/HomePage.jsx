@@ -5,8 +5,8 @@ import { useEvents } from '../../context/EventContext.jsx';
 import { EventCard } from './components/EventCard.jsx';
 import { useTheme } from '../../context/ThemeContext.jsx';
 
-const LIGHT_HERO_VIDEO_SRC = '/videos/anime-sky.mp4';
-const DARK_HERO_VIDEO_SRC = '/videos/darkbackground.mp4';
+const LIGHT_HERO_VIDEO_SRC = `${import.meta.env.BASE_URL}videos/anime-sky.mp4`;
+const DARK_HERO_VIDEO_SRC = `${import.meta.env.BASE_URL}videos/darkbackground.mp4`;
 
 export function HomePage() {
   const { events, categories } = useEvents();

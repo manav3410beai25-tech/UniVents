@@ -6,7 +6,7 @@ export const DEMO_ACCOUNTS = [
     password: 'password123',
     department: 'Computer Science',
     interests: ['AI & Robotics', 'Hackathons', 'Design', 'Web Development'],
-    avatarUrl: '/images/demo/the%20god%20of%20every%20movment%20%F0%9F%A5%B6.jpg',
+    avatarUrl: `${import.meta.env.BASE_URL}images/demo/the%20god%20of%20every%20movment%20%F0%9F%A5%B6.jpg`,
     description: 'Junior CS Major passionate about AI and collegiate hackathons.',
   },
   {
@@ -16,7 +16,7 @@ export const DEMO_ACCOUNTS = [
     password: 'password123',
     department: 'Engineering Student Council',
     interests: ['Technology', 'Workshops', 'Leadership'],
-    avatarUrl: '/images/demo/%20-13.jpg',
+    avatarUrl: `${import.meta.env.BASE_URL}images/demo/%20-13.jpg`,
     description: 'Vice President of Events for Engineering Student Council.',
   },
   {
@@ -26,7 +26,7 @@ export const DEMO_ACCOUNTS = [
     password: 'password123',
     department: 'Office of Student Affairs',
     interests: ['Administration', 'Campus Life', 'Policy'],
-    avatarUrl: '/images/demo/Harry.jpg',
+    avatarUrl: `${import.meta.env.BASE_URL}images/demo/Harry.jpg`,
     description: 'Director of Student Engagement and Campus Activities.',
   },
 ];

@@ -19,7 +19,7 @@ export function EventCard({ event, showStatus = false }) {
     e.preventDefault();
     e.stopPropagation();
     if (!user) {
-      window.location.href = `/login?redirect=${encodeURIComponent(`/events/${event.id}`)}`;
+      window.location.href = `${import.meta.env.BASE_URL}login?redirect=${encodeURIComponent(`/events/${event.id}`)}`;
       return;
     }
     toggleSaveEvent(event.id);

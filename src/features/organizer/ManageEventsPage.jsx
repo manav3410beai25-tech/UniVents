@@ -144,7 +144,7 @@ export function ManageEventsPage() {
           title="No events found"
           description={`You do not have any events matching the "${filter}" status.`}
           actionLabel="Create an Event"
-          onAction={() => (window.location.href = '/organizer/events/new')}
+          onAction={() => (window.location.href = `${import.meta.env.BASE_URL}organizer/events/new`)}
         />
       )}
 

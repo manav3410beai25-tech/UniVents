@@ -4,7 +4,8 @@ import { defineConfig } from 'vite'
 import { resolve } from 'node:path'
 
 // https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
+  base: mode === 'production' ? '/UniVents/' : '/',
   plugins: [
     react(),
     babel({ presets: [reactCompilerPreset()] })
@@ -16,4 +17,4 @@ export default defineConfig({
       }
     }
   }
-})
+}))

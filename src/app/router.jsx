@@ -109,4 +109,4 @@ export const router = createBrowserRouter([
       { path: 'categories', element: <CategoryManagerPage /> },
     ],
   },
-]);
+], { basename: import.meta.env.BASE_URL });

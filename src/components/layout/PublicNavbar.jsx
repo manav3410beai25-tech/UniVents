@@ -42,7 +42,7 @@ export function PublicNavbar() {
     resetDemoData();
     toast.success('Demo data restored to initial sample state.');
     setTimeout(() => {
-      window.location.href = '/';
+      window.location.href = import.meta.env.BASE_URL;
     }, 400);
   };
 
@@ -63,7 +63,7 @@ export function PublicNavbar() {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2" style={{ textDecoration: 'none' }}>
             <span className="brand-mark" aria-hidden="true">
-              <img src="/uselogo.jpg" alt="" className="brand-mark__image" />
+              <img src={`${import.meta.env.BASE_URL}uselogo.jpg`} alt="" className="brand-mark__image" />
             </span>
             <div className="flex flex-col">
               <span style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-main)', letterSpacing: '-0.02em', lineHeight: 1.1 }}>
@@ -233,7 +233,7 @@ export function PublicFooter() {
     resetDemoData();
     toast.success('Demo data restored to initial sample state.');
     setTimeout(() => {
-      window.location.href = '/';
+      window.location.href = import.meta.env.BASE_URL;
     }, 400);
   };
 
@@ -258,7 +258,7 @@ export function PublicFooter() {
           <div>
             <div className="flex items-center gap-2" style={{ marginBottom: '0.75rem' }}>
               <span className="brand-mark" aria-hidden="true">
-                <img src="/uselogo.jpg" alt="" className="brand-mark__image" />
+                <img src={`${import.meta.env.BASE_URL}uselogo.jpg`} alt="" className="brand-mark__image" />
               </span>
               <span style={{ fontSize: '1.15rem', fontWeight: 800 }}>Univents</span>
             </div>

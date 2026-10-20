@@ -261,7 +261,7 @@ export function StudentDashboard() {
             title="No upcoming registrations"
             description="You haven't registered for any upcoming events yet. Discover student workshops, hackathons, and fairs in the campus directory."
             actionLabel="Browse Events"
-            onAction={() => (window.location.href = '/events')}
+            onAction={() => (window.location.href = `${import.meta.env.BASE_URL}events`)}
           />
         )}
       </div>
