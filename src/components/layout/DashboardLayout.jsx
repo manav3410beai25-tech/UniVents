@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { NavLink, Outlet, useNavigate, Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Outlet, useNavigate, Link, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard,
   CalendarCheck,
@@ -14,13 +14,12 @@ import {
   Sun,
   Moon,
   RotateCcw,
-  Sparkles,
   Menu,
-  X,
   ChevronRight,
   Shield,
   Layers,
-  GraduationCap
+  GraduationCap,
+  Compass
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { useTheme } from '../../context/ThemeContext.jsx';
@@ -29,16 +28,30 @@ import { resetDemoData } from '../../services/storageService.js';
 import { ConfirmDialog } from '../ui/ConfirmDialog.jsx';
 import { useToast } from '../ui/Toast.jsx';
 import { MobileBottomNav } from './MobileBottomNav.jsx';
+import { DEFAULT_AVATAR_PATH, resolveAvatarUrl } from '../../data/avatars.js';
 
 export function DashboardLayout() {
   const { user, logout } = useAuth();
   const { isDark, toggleTheme } = useTheme();
   const { unreadCount } = useNotifications();
   const navigate = useNavigate();
+  const location = useLocation();
   const toast = useToast();
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [resetDialogOpen, setResetDialogOpen] = useState(false);
+
+  // Close mobile sidebar on Escape key
+  useEffect(() => {
+    if (!sidebarOpen) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setSidebarOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [sidebarOpen]);
 
   const handleResetData = () => {
     resetDemoData();
@@ -73,6 +86,19 @@ export function DashboardLayout() {
 
   const navItems = role === 'admin' ? adminNav : role === 'organizer' ? organizerNav : studentNav;
 
+  const isNavItemActive = (itemPath, currentPath) => {
+    if (itemPath === '/organizer/events/new') {
+      return currentPath === '/organizer/events/new';
+    }
+    if (itemPath === '/organizer/events') {
+      return (
+        currentPath === '/organizer/events' ||
+        (currentPath.startsWith('/organizer/events/') && currentPath !== '/organizer/events/new')
+      );
+    }
+    return currentPath === itemPath || currentPath.startsWith(`${itemPath}/`);
+  };
+
   return (
     <div className="dashboard-layout flex min-h-screen" style={{ backgroundColor: 'var(--bg-page)' }}>
       {/* Mobile Sidebar Backdrop */}
@@ -103,7 +129,7 @@ export function DashboardLayout() {
       >
         <div className="flex flex-col gap-6">
           {/* Logo */}
-          <div className="flex items-center justify-between px-2">
+          <div className="flex items-center px-2">
             <Link to="/" className="flex items-center gap-2" style={{ textDecoration: 'none' }}>
               <span className="brand-mark" aria-hidden="true">
                 <img src={`${import.meta.env.BASE_URL}uselogo.jpg`} alt="" className="brand-mark__image" />
@@ -117,15 +143,6 @@ export function DashboardLayout() {
                 </span>
               </div>
             </Link>
-
-            <button
-              onClick={() => setSidebarOpen(false)}
-              className="btn btn-ghost btn-sm"
-              style={{ display: 'none' }}
-              id="close-sidebar-btn"
-            >
-              <X size={18} />
-            </button>
           </div>
 
           {/* User Profile Mini Banner */}
@@ -141,9 +158,14 @@ export function DashboardLayout() {
             }}
           >
             <img
-              src={user?.avatarUrl}
-              alt={user?.name}
+              src={resolveAvatarUrl(user?.avatarUrl)}
+              alt={user?.name || 'User avatar'}
               style={{ width: 40, height: 40, borderRadius: '50%', objectFit: 'cover' }}
+              onError={(e) => {
+                if (e.currentTarget.src !== DEFAULT_AVATAR_PATH) {
+                  e.currentTarget.src = DEFAULT_AVATAR_PATH;
+                }
+              }}
             />
             <div style={{ overflow: 'hidden' }}>
               <p style={{ fontWeight: 600, fontSize: '0.875rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
@@ -159,23 +181,14 @@ export function DashboardLayout() {
           <nav className="flex flex-col gap-1">
             {navItems.map((item) => {
               const Icon = item.icon;
+              const active = isNavItemActive(item.path, location.pathname);
               return (
-                <NavLink
+                <Link
                   key={item.path}
                   to={item.path}
                   onClick={() => setSidebarOpen(false)}
-                  className={({ isActive }) =>
-                    `flex items-center justify-between text-sm font-medium px-3 py-2.5 rounded-md transition-all ${
-                      isActive
-                        ? 'bg-primary text-white shadow-xs'
-                        : 'text-secondary hover:bg-surface-hover'
-                    }`
-                  }
-                  style={({ isActive }) => ({
-                    backgroundColor: isActive ? 'var(--primary)' : 'transparent',
-                    color: isActive ? '#ffffff' : 'var(--text-secondary)',
-                    borderRadius: 'var(--radius-md)',
-                  })}
+                  className={`dashboard-nav-link${active ? ' is-active' : ''}`}
+                  aria-current={active ? 'page' : undefined}
                 >
                   <div className="flex items-center gap-3">
                     <Icon size={18} />
@@ -195,7 +208,7 @@ export function DashboardLayout() {
                       {item.badge}
                     </span>
                   )}
-                </NavLink>
+                </Link>
               );
             })}
 
@@ -204,21 +217,12 @@ export function DashboardLayout() {
             <Link
               to="/profile"
               onClick={() => setSidebarOpen(false)}
-              className="flex items-center gap-3 text-sm font-medium px-3 py-2.5 text-secondary hover:bg-surface-hover"
-              style={{ borderRadius: 'var(--radius-md)', color: 'var(--text-secondary)' }}
+              className="dashboard-nav-link"
             >
-              <User size={18} />
-              <span>Edit Profile</span>
-            </Link>
-
-            <Link
-              to="/events"
-              onClick={() => setSidebarOpen(false)}
-              className="flex items-center gap-3 text-sm font-medium px-3 py-2.5 text-secondary hover:bg-surface-hover"
-              style={{ borderRadius: 'var(--radius-md)', color: 'var(--text-secondary)' }}
-            >
-              <Sparkles size={18} />
-              <span>Public Directory</span>
+              <div className="flex items-center gap-3">
+                <User size={18} />
+                <span>Edit Profile</span>
+              </div>
             </Link>
           </nav>
         </div>
@@ -248,7 +252,7 @@ export function DashboardLayout() {
           <button
             onClick={() => {
               logout();
-              navigate('/login');
+              navigate('/login', { replace: true });
               toast.info('Logged out.');
             }}
             className="btn btn-secondary btn-sm w-full"
@@ -263,43 +267,36 @@ export function DashboardLayout() {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top Header Bar */}
-        <header
-          style={{
-            height: 'var(--header-height)',
-            backgroundColor: 'var(--bg-surface)',
-            borderBottom: '1px solid var(--border-color)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '0 1.5rem',
-            position: 'sticky',
-            top: 0,
-            zIndex: 30,
-          }}
-        >
-          <div className="flex items-center gap-3">
+        <header className="dashboard-header">
+          <div className="flex items-center gap-3 min-w-0">
             <button
               onClick={() => setSidebarOpen(true)}
               className="btn btn-ghost btn-sm"
               id="open-sidebar-btn"
-              style={{ display: 'none' }}
               aria-label="Open sidebar"
+              aria-expanded={sidebarOpen}
             >
               <Menu size={20} />
             </button>
 
-            <div className="flex items-center gap-2 text-sm text-secondary">
-              <Link to="/" className="text-secondary">Home</Link>
-              <ChevronRight size={14} />
-              <span style={{ textTransform: 'capitalize', color: 'var(--text-main)', fontWeight: 600 }}>
+            <div className="flex items-center gap-2 text-sm text-secondary min-w-0">
+              <Link to="/" className="text-secondary hover:text-primary">Home</Link>
+              <ChevronRight size={14} className="flex-shrink-0" />
+              <span style={{ textTransform: 'capitalize', color: 'var(--text-main)', fontWeight: 600, whiteSpace: 'nowrap' }}>
                 {role} Area
               </span>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            <Link to="/events" className="btn btn-secondary btn-sm">
-              Explore Events
+          <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+            <Link
+              to="/events"
+              className="dashboard-explore-btn"
+              title="Explore all campus events"
+              aria-label="Explore campus events"
+            >
+              <Compass size={15} strokeWidth={2.2} className="dashboard-explore-btn__icon" />
+              <span className="dashboard-explore-btn__label">Explore</span>
             </Link>
 
             <div
@@ -324,7 +321,7 @@ export function DashboardLayout() {
         </header>
 
         {/* Dashboard Page View Container */}
-        <main style={{ padding: '2rem 1.5rem', flex: 1 }}>
+        <main className="dashboard-main">
           <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
             <Outlet />
           </div>
@@ -342,13 +339,6 @@ export function DashboardLayout() {
       />
 
       <MobileBottomNav />
-
-      <style>{`
-        @media (max-width: 768px) {
-          #open-sidebar-btn { display: inline-flex !important; }
-          #close-sidebar-btn { display: inline-flex !important; }
-        }
-      `}</style>
     </div>
   );
 }

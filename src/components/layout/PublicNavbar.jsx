@@ -1,12 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import {
-  Calendar,
   Sun,
   Moon,
   LogOut,
-  User,
-  Compass,
   Menu,
   X,
   RotateCcw,
@@ -52,8 +49,6 @@ export function PublicNavbar() {
         className="public-header"
         style={{
           height: 'var(--header-height)',
-          backgroundColor: 'var(--bg-surface)',
-          borderBottom: '1px solid var(--border-color)',
           position: 'sticky',
           top: 0,
           zIndex: 40,
@@ -113,7 +108,7 @@ export function PublicNavbar() {
               style={{ color: 'var(--text-secondary)' }}
             >
               <RotateCcw size={16} />
-              <span className="text-xs" style={{ display: 'none', md: 'inline' }}>Reset Demo</span>
+              <span className="text-xs public-nav__reset-label">Reset Demo</span>
             </button>
 
             {/* Dark Mode Switcher */}
@@ -161,7 +156,7 @@ export function PublicNavbar() {
                 <button
                   onClick={() => {
                     logout();
-                    navigate('/');
+                    navigate('/', { replace: true });
                     toast.info('Logged out.');
                   }}
                   className="btn btn-ghost btn-sm"
@@ -196,7 +191,7 @@ export function PublicNavbar() {
                 <span>{isDark ? 'Light mode' : 'Dark mode'}</span>
               </button>
               {isAuthenticated && (
-                <button type="button" onClick={() => { logout(); navigate('/'); toast.info('Logged out.'); setMobileMenuOpen(false); }}>
+                <button type="button" onClick={() => { logout(); navigate('/', { replace: true }); toast.info('Logged out.'); setMobileMenuOpen(false); }}>
                   <LogOut size={17} />
                   <span>Log out</span>
                 </button>
@@ -226,23 +221,12 @@ export function PublicNavbar() {
 }
 
 export function PublicFooter() {
-  const [resetDialogOpen, setResetDialogOpen] = useState(false);
-  const toast = useToast();
-
-  const handleResetData = () => {
-    resetDemoData();
-    toast.success('Demo data restored to initial sample state.');
-    setTimeout(() => {
-      window.location.href = import.meta.env.BASE_URL;
-    }, 400);
-  };
-
   return (
     <footer
       style={{
         backgroundColor: 'var(--bg-surface)',
         borderTop: '1px solid var(--border-color)',
-        padding: '3rem 0 2rem 0',
+        padding: 'clamp(2rem, 5vw, 3rem) 0 2rem 0',
         marginTop: 'auto',
       }}
     >
@@ -250,57 +234,50 @@ export function PublicFooter() {
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-            gap: '2.5rem',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 220px), 1fr))',
+            gap: 'clamp(1.5rem, 4vw, 3rem)',
             marginBottom: '2.5rem',
           }}
         >
-          <div>
+          {/* Column 1 — UniVents */}
+          <div style={{ maxWidth: 320 }}>
             <div className="flex items-center gap-2" style={{ marginBottom: '0.75rem' }}>
               <span className="brand-mark" aria-hidden="true">
                 <img src={`${import.meta.env.BASE_URL}uselogo.jpg`} alt="" className="brand-mark__image" />
               </span>
-              <span style={{ fontSize: '1.15rem', fontWeight: 800 }}>Univents</span>
+              <span style={{ fontSize: '1.15rem', fontWeight: 800 }}>UniVents</span>
             </div>
-            <p className="text-sm text-secondary" style={{ maxWidth: 280, lineHeight: 1.6 }}>
-              Centralized campus event discovery, seamless student registrations, and university-wide organizer management.
+            <p className="text-sm text-secondary" style={{ lineHeight: 1.6, marginBottom: '0.35rem' }}>
+              One campus. Every event.
+            </p>
+            <p className="text-sm text-secondary" style={{ lineHeight: 1.6 }}>
+              Campus event discovery and management.
             </p>
           </div>
 
+          {/* Column 2 — About & Support */}
           <div>
-            <h4 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: '0.85rem' }}>Explore Campus</h4>
+            <h4 style={{ fontSize: '0.95rem', fontWeight: 700, marginBottom: '0.85rem' }}>About &amp; Support</h4>
             <div className="flex flex-col gap-2 text-sm text-secondary">
+              <Link to="/about">About Us</Link>
+              <Link to="/contact">Contact Us</Link>
+            </div>
+          </div>
+
+          {/* Column 3 — Explore Campus */}
+          <div>
+            <h4 style={{ fontSize: '0.95rem', fontWeight: 700, marginBottom: '0.85rem' }}>Explore Campus</h4>
+            <div className="flex flex-col gap-2 text-sm text-secondary">
+              <Link to="/events">All Campus Events</Link>
               <Link to="/events?category=technical">Technical Workshops</Link>
               <Link to="/events?category=hackathons">Collegiate Hackathons</Link>
-              <Link to="/events?category=career">Career & Networking Fairs</Link>
-              <Link to="/events?category=cultural">Cultural Galas & Festivals</Link>
+              <Link to="/events?category=career">Career &amp; Networking</Link>
+              <Link to="/events?category=cultural">Cultural &amp; Arts</Link>
             </div>
-          </div>
-
-          <div>
-            <h4 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: '0.85rem' }}>Simulated Roles</h4>
-            <div className="flex flex-col gap-2 text-sm text-secondary">
-              <Link to="/login?role=student">Student Experience</Link>
-              <Link to="/login?role=organizer">Organizer Studio</Link>
-              <Link to="/login?role=admin">Administrator Review Queue</Link>
-              <button
-                onClick={() => setResetDialogOpen(true)}
-                className="text-left"
-                style={{ color: 'var(--error)', fontWeight: 500 }}
-              >
-                Reset Demo Data
-              </button>
-            </div>
-          </div>
-
-          <div>
-            <h4 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: '0.85rem' }}>Demo Architecture</h4>
-            <p className="text-xs text-secondary" style={{ lineHeight: 1.6 }}>
-              Powered by React 19, Vite, Context API &amp; versioned browser localStorage. Designed as a modern SaaS portal with zero backend requirements.
-            </p>
           </div>
         </div>
 
+        {/* Bottom Row */}
         <div
           style={{
             borderTop: '1px solid var(--border-color)',
@@ -313,23 +290,10 @@ export function PublicFooter() {
           }}
           className="text-xs text-secondary"
         >
-          <span>© 2026 Univents Portal. Built for University Campus Demonstrations.</span>
-          <div className="flex gap-4">
-            <span>Client-side Mock Portal</span>
-            <span>Local Session Mode</span>
-          </div>
+          <span>© 2026 UniVents. All rights reserved.</span>
+          <span style={{ opacity: 0.85 }}>Client-side demonstration mode</span>
         </div>
       </div>
-
-      <ConfirmDialog
-        isOpen={resetDialogOpen}
-        onClose={() => setResetDialogOpen(false)}
-        onConfirm={handleResetData}
-        title="Reset Demo Data?"
-        message="This will restore all default events, organizers, categories, registrations and demo users to their initial state, and end your active session."
-        confirmText="Reset All Data"
-        variant="danger"
-      />
     </footer>
   );
 }

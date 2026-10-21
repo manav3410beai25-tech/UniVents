@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   CalendarCheck,
@@ -6,18 +6,14 @@ import {
   Award,
   Bell,
   Search,
-  Sparkles,
-  ArrowRight,
   Clock,
   MapPin,
-  XCircle,
   FileText
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { useEvents } from '../../context/EventContext.jsx';
 import { useNotifications } from '../../context/NotificationContext.jsx';
-import { formatDateTime, formatDateOnly, formatTimeOnly } from '../../utils/dates.js';
-import { Badge } from '../../components/ui/Badge.jsx';
+import { formatDateTime, formatDateOnly } from '../../utils/dates.js';
 import { Button } from '../../components/ui/Button.jsx';
 import { EmptyState } from '../../components/ui/EmptyState.jsx';
 import { CertificateModal } from './CertificateModal.jsx';
@@ -26,7 +22,7 @@ import { useToast } from '../../components/ui/Toast.jsx';
 export function StudentDashboard() {
   const { user } = useAuth();
   const { events, registrations, savedEventIds, cancelRegistration } = useEvents();
-  const { notifications, unreadCount } = useNotifications();
+  const { unreadCount } = useNotifications();
   const toast = useToast();
 
   const [selectedCertEvent, setSelectedCertEvent] = useState(null);
@@ -52,18 +48,11 @@ export function StudentDashboard() {
     }))
     .filter((item) => item.event);
 
-  // Suggested events based on user interests
-  const userInterests = user?.interests || [];
-  const suggestedEvents = events
-    .filter((e) => e.status === 'published' && new Date(e.startAt).getTime() > Date.now())
-    .filter((e) => !studentRegs.some((r) => r.eventId === e.id && r.status === 'confirmed'))
-    .slice(0, 3);
-
   const handleCancelReg = (regId, eventTitle) => {
     try {
       cancelRegistration(regId, eventTitle);
       toast.info('Registration cancelled.');
-    } catch (err) {
+    } catch {
       toast.error('Failed to cancel registration.');
     }
   };
@@ -71,14 +60,7 @@ export function StudentDashboard() {
   return (
     <div className="flex flex-col gap-8">
       {/* Welcome Banner */}
-      <div
-        className="card"
-        style={{
-          background: 'linear-gradient(135deg, #38a9e8 0%, #125b96 100%)',
-          color: '#ffffff',
-          padding: '2.25rem',
-        }}
-      >
+      <div className="card student-welcome-banner">
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div>
             <span
@@ -106,7 +88,7 @@ export function StudentDashboard() {
           <Link to="/events">
             <Button
               variant="secondary"
-              style={{ backgroundColor: '#ffffff', color: 'var(--primary)', fontWeight: 600 }}
+              className="student-welcome-banner__btn"
               icon={Search}
             >
               Explore Campus Events
@@ -116,13 +98,7 @@ export function StudentDashboard() {
       </div>
 
       {/* Metrics Row */}
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-          gap: '1.25rem',
-        }}
-      >
+      <div className="dashboard-metrics-grid">
         <div className="card flex items-center gap-4">
           <div
             style={{
@@ -209,20 +185,19 @@ export function StudentDashboard() {
             {upcomingRegisteredEvents.map(({ reg, event }) => (
               <div
                 key={reg.id}
-                className="card flex items-center justify-between flex-wrap gap-4"
-                style={{ padding: '1.25rem' }}
+                className="card reg-item-card"
               >
-                <div className="flex items-center gap-4 min-w-0">
+                <div className="reg-item-card__main">
                   <img
                     src={event.bannerUrl}
                     alt={event.title}
-                    style={{ width: 84, height: 60, borderRadius: 'var(--radius-md)', objectFit: 'cover' }}
+                    className="reg-item-card__thumb"
                   />
-                  <div>
-                    <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '0.25rem' }}>
+                  <div className="reg-item-card__info">
+                    <h3>
                       <Link to={`/events/${event.id}`}>{event.title}</Link>
                     </h3>
-                    <div className="flex items-center gap-3 text-xs text-secondary flex-wrap">
+                    <div className="flex items-center gap-3 text-xs text-secondary flex-wrap" style={{ marginTop: '0.25rem' }}>
                       <span className="flex items-center gap-1">
                         <Clock size={13} />
                         {formatDateTime(event.startAt)}
@@ -235,7 +210,7 @@ export function StudentDashboard() {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div className="reg-item-card__actions">
                   <div className="text-right">
                     <span className="text-xs text-secondary block">Confirmation Code</span>
                     <strong style={{ letterSpacing: '0.05em', color: 'var(--primary)' }}>
@@ -280,36 +255,38 @@ export function StudentDashboard() {
             {attendedEvents.map(({ reg, event }) => (
               <div
                 key={reg.id}
-                className="card flex items-center justify-between flex-wrap gap-4"
-                style={{ padding: '1.25rem' }}
+                className="card reg-item-card"
               >
-                <div className="flex items-center gap-4">
+                <div className="reg-item-card__main">
                   <div
                     style={{
                       padding: '0.75rem',
                       borderRadius: 'var(--radius-md)',
                       backgroundColor: 'var(--success-light)',
                       color: 'var(--success-text)',
+                      flexShrink: 0,
                     }}
                   >
                     <Award size={24} />
                   </div>
-                  <div>
-                    <h3 style={{ fontSize: '1rem', fontWeight: 700 }}>{event.title}</h3>
-                    <p className="text-xs text-secondary">
+                  <div className="reg-item-card__info">
+                    <h3>{event.title}</h3>
+                    <p className="text-xs text-secondary" style={{ marginTop: '0.2rem' }}>
                       Attended on {formatDateOnly(event.startAt)} • Checked in: {formatDateTime(reg.checkedInAt)}
                     </p>
                   </div>
                 </div>
 
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  icon={FileText}
-                  onClick={() => setSelectedCertEvent({ event, reg })}
-                >
-                  View Certificate
-                </Button>
+                <div className="reg-item-card__actions">
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    icon={FileText}
+                    onClick={() => setSelectedCertEvent({ event, reg })}
+                  >
+                    View Certificate
+                  </Button>
+                </div>
               </div>
             ))}
           </div>

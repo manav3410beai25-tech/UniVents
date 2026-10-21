@@ -1,7 +1,4 @@
-import React from 'react';
-import { Search, X, Filter } from 'lucide-react';
-import { Input, Select } from '../../../components/ui/Input.jsx';
-import { Button } from '../../../components/ui/Button.jsx';
+import { Search, X } from 'lucide-react';
 
 export function EventFilters({
   search,
@@ -27,16 +24,10 @@ export function EventFilters({
     availabilityFilter !== 'all';
 
   return (
-    <div
-      className="card"
-      style={{
-        padding: '1.25rem',
-        marginBottom: '2rem',
-      }}
-    >
+    <div className="card events-filter-card">
       <div className="flex flex-col gap-4">
         {/* Search bar row */}
-        <div className="flex items-center gap-3">
+        <div className="events-filter-search-row">
           <div style={{ position: 'relative', flex: 1 }}>
             <Search
               size={18}
@@ -72,7 +63,7 @@ export function EventFilters({
             )}
           </div>
 
-          <div style={{ width: '180px' }}>
+          <div style={{ width: '180px', flex: 'none' }}>
             <select
               className="form-select"
               value={sortBy}
@@ -87,13 +78,7 @@ export function EventFilters({
         </div>
 
         {/* Filter Pills / Dropdowns */}
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-            gap: '1rem',
-          }}
-        >
+        <div className="events-filter-grid">
           {/* Category Filter */}
           <div>
             <label className="text-xs font-semibold text-secondary" style={{ display: 'block', marginBottom: '0.3rem' }}>
@@ -173,7 +158,7 @@ export function EventFilters({
             <button
               onClick={onClear}
               className="btn btn-ghost btn-sm text-xs font-medium"
-              style={{ color: 'var(--primary)', height: '28px', padding: '0 8px' }}
+              style={{ color: 'var(--link-color)', height: '28px', padding: '0 8px' }}
             >
               <X size={14} />
               <span>Reset All Filters</span>

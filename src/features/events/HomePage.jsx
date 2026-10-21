@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowRight, Search, CalendarDays, MapPin, Sparkles, GraduationCap, Users, ShieldCheck } from 'lucide-react';
+import { ArrowRight, Search, Sparkles, GraduationCap, Users, ShieldCheck } from 'lucide-react';
 import { useEvents } from '../../context/EventContext.jsx';
 import { EventCard } from './components/EventCard.jsx';
 import { useTheme } from '../../context/ThemeContext.jsx';
@@ -15,6 +15,7 @@ export function HomePage() {
   const [query, setQuery] = useState('');
   const [currentTime, setCurrentTime] = useState(0);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+
   useEffect(() => {
     const clockSync = window.setTimeout(() => setCurrentTime(Date.now()), 0);
     const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -27,9 +28,13 @@ export function HomePage() {
   }, []);
 
   const publishedEvents = events.filter((event) => event.status === 'published');
-  const featuredEvents = publishedEvents.filter((event) => event.featured).slice(0, 3);
-  const upcomingEvents = publishedEvents.filter((event) => new Date(event.startAt).getTime() > currentTime).slice(0, 6);
-  const previewEvents = featuredEvents.length ? featuredEvents.slice(0, 3) : upcomingEvents.slice(0, 3);
+  const upcomingEvents = publishedEvents.filter((event) => new Date(event.startAt).getTime() > currentTime);
+
+  // Deduplicate: prioritize featured events first, then remaining upcoming events, up to 6 unique events
+  const featuredEvents = upcomingEvents.filter((event) => event.featured);
+  const nonFeaturedEvents = upcomingEvents.filter((event) => !event.featured);
+  const showcaseEvents = [...featuredEvents, ...nonFeaturedEvents].slice(0, 6);
+
   const activeCategories = categories.filter((category) => category.isActive);
 
   return (
@@ -58,21 +63,6 @@ export function HomePage() {
             <Link to="/login?role=organizer" className="hero__secondary">Host an event</Link>
           </div>
         </div>
-        <div className="event-preview" aria-label="Featured campus events">
-          <div className="event-preview__top">
-            <div><span className="preview-kicker">A little campus inspiration</span><h2>Happening around you</h2></div>
-            <Link to="/events" className="preview-link">All events <ArrowRight size={15} /></Link>
-          </div>
-          <div className="event-preview__items">
-            {previewEvents.length ? previewEvents.map((event) => (
-              <Link className="preview-event" to={`/events/${event.id}`} key={event.id}>
-                <img src={event.bannerUrl} alt="" loading="lazy" />
-                <span className="preview-event__copy"><strong>{event.title}</strong><small><CalendarDays size={12} /> {new Date(event.startAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}<i>·</i><MapPin size={12} /> {event.venue}</small></span>
-                <ArrowRight className="preview-event__arrow" size={16} />
-              </Link>
-            )) : <p className="preview-empty">New campus events are on their way.</p>}
-          </div>
-        </div>
       </section>
 
       <section className="discovery-band" aria-label="Find a campus event">
@@ -88,17 +78,27 @@ export function HomePage() {
         </div>
       </section>
 
-      {featuredEvents.length > 0 && <section className="event-section event-section--featured">
+      <section className="event-section" aria-label="Campus event showcase">
         <div className="container">
-          <div className="section-heading"><div><span className="section-kicker">Picked for campus</span><h2>Worth stepping out for.</h2><p>Standout moments from across your university.</p></div><Link to="/events" className="section-more">See every event <ArrowRight size={16} /></Link></div>
-          <div className="event-grid event-grid--featured">{featuredEvents.map((event) => <EventCard key={event.id} event={event} />)}</div>
-        </div>
-      </section>}
-
-      <section className="event-section event-section--upcoming">
-        <div className="container">
-          <div className="section-heading"><div><span className="section-kicker">Coming up</span><h2>Make room for something new.</h2><p>Good ideas, new people and a calendar worth filling.</p></div><Link to="/events" className="section-more">Explore {publishedEvents.length} events <ArrowRight size={16} /></Link></div>
-          {upcomingEvents.length ? <div className="event-grid">{upcomingEvents.map((event) => <EventCard key={event.id} event={event} />)}</div> : <p className="event-empty">No upcoming events just yet. Check back soon.</p>}
+          <div className="section-heading">
+            <div>
+              <span className="section-kicker">Picked for campus</span>
+              <h2>Worth stepping out for.</h2>
+              <p>Standout moments and upcoming gatherings from across your university.</p>
+            </div>
+            <Link to="/events" className="section-more">
+              Explore all events <ArrowRight size={16} />
+            </Link>
+          </div>
+          {showcaseEvents.length ? (
+            <div className="event-grid">
+              {showcaseEvents.map((event) => (
+                <EventCard key={event.id} event={event} />
+              ))}
+            </div>
+          ) : (
+            <p className="event-empty">No upcoming events just yet. Check back soon.</p>
+          )}
         </div>
       </section>
 

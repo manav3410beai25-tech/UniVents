@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Sparkles, GraduationCap } from 'lucide-react';
+import { useState } from 'react';
+import { Link, useNavigate, Navigate } from 'react-router-dom';
+import { GraduationCap, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { Input, Select } from '../../components/ui/Input.jsx';
 import { Button } from '../../components/ui/Button.jsx';
@@ -17,7 +17,7 @@ const DEPARTMENTS = [
 ];
 
 export function SignupPage() {
-  const { signup } = useAuth();
+  const { user, isAuthenticated, signup } = useAuth();
   const navigate = useNavigate();
   const toast = useToast();
 
@@ -26,11 +26,18 @@ export function SignupPage() {
   const [department, setDepartment] = useState('Computer Science');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  if (isAuthenticated && user) {
+    return <Navigate to="/student/dashboard" replace />;
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (loading) return;
     setError('');
 
     const emailErr = validateEmail(email);
@@ -52,25 +59,29 @@ export function SignupPage() {
 
     try {
       setLoading(true);
-      const user = await signup({
+      const createdUser = await signup({
         name,
         email,
         department,
         password,
         interests: ['Technical', 'Workshops'],
       });
-      toast.success(`Account created! Welcome, ${user.name}`);
-      navigate('/student/dashboard');
+      setPassword('');
+      setConfirmPassword('');
+      toast.success(`Account created! Welcome, ${createdUser.name}`);
+      navigate('/student/dashboard', { replace: true });
     } catch (err) {
       setError(err.message || 'Signup failed.');
+      setPassword('');
+      setConfirmPassword('');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="container" style={{ padding: '3.5rem 1rem', maxWidth: '540px' }}>
-      <div className="card" style={{ padding: '2.5rem' }}>
+    <div className="container auth-page">
+      <div className="card auth-card">
         <div className="text-center" style={{ marginBottom: '2rem' }}>
           <div
             style={{
@@ -96,6 +107,8 @@ export function SignupPage() {
 
         {error && (
           <div
+            role="alert"
+            aria-live="polite"
             style={{
               padding: '0.85rem',
               backgroundColor: 'var(--error-light)',
@@ -117,6 +130,7 @@ export function SignupPage() {
             onChange={(e) => setName(e.target.value)}
             placeholder="e.g. Manav"
             required
+            autoComplete="name"
           />
 
           <Input
@@ -124,8 +138,9 @@ export function SignupPage() {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="manav@gmail.com"
+            placeholder="manav@chitkara.edu.in"
             required
+            autoComplete="email"
           />
 
           <Select
@@ -136,23 +151,61 @@ export function SignupPage() {
             required
           />
 
-          <Input
-            label="Password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="At least 6 characters"
-            required
-          />
+          <div className="form-group">
+            <label htmlFor="signup-password" className="form-label">
+              <span>Password <span style={{ color: 'var(--error)' }}>*</span></span>
+            </label>
+            <div className="input-password-wrap">
+              <input
+                id="signup-password"
+                type={showPassword ? 'text' : 'password'}
+                className="form-input"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="At least 6 characters"
+                required
+                autoComplete="new-password"
+              />
+              <button
+                type="button"
+                className="input-password-toggle"
+                onClick={() => setShowPassword((prev) => !prev)}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                aria-pressed={showPassword}
+                tabIndex={-1}
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
+          </div>
 
-          <Input
-            label="Confirm Password"
-            type="password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            placeholder="Repeat password"
-            required
-          />
+          <div className="form-group">
+            <label htmlFor="signup-confirm-password" className="form-label">
+              <span>Confirm Password <span style={{ color: 'var(--error)' }}>*</span></span>
+            </label>
+            <div className="input-password-wrap">
+              <input
+                id="signup-confirm-password"
+                type={showConfirmPassword ? 'text' : 'password'}
+                className="form-input"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Repeat password"
+                required
+                autoComplete="new-password"
+              />
+              <button
+                type="button"
+                className="input-password-toggle"
+                onClick={() => setShowConfirmPassword((prev) => !prev)}
+                aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+                aria-pressed={showConfirmPassword}
+                tabIndex={-1}
+              >
+                {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
+          </div>
 
           <div
             style={{
@@ -167,7 +220,7 @@ export function SignupPage() {
             <strong>Note:</strong> Public signup creates a verified Student profile. Organizer and Administrative demo roles can be switched directly via the Sign In screen.
           </div>
 
-          <Button type="submit" variant="primary" className="w-full" loading={loading}>
+          <Button type="submit" variant="primary" className="w-full" loading={loading} aria-busy={loading}>
             Create Account & Enter Portal
           </Button>
         </form>

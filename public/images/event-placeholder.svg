@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-label="Event image placeholder">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#eef4f8"/>
+      <stop offset="1" stop-color="#dce8ef"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="675" fill="url(#bg)"/>
+  <circle cx="600" cy="298" r="92" fill="#fff" opacity=".78"/>
+  <rect x="542" y="258" width="116" height="82" rx="12" fill="none" stroke="#7894a5" stroke-width="9"/>
+  <circle cx="578" cy="286" r="9" fill="#7894a5"/>
+  <path d="m550 326 31-30 22 20 19-17 29 27" fill="none" stroke="#7894a5" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="600" y="438" fill="#526b7a" font-family="Arial, sans-serif" font-size="26" text-anchor="middle">Event image will appear here</text>
+</svg>

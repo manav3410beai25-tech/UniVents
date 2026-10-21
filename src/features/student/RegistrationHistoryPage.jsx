@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { CalendarCheck, Clock, MapPin, Award, FileText } from 'lucide-react';
+import { CalendarCheck, FileText } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { useEvents } from '../../context/EventContext.jsx';
-import { formatDateTime, formatDateOnly } from '../../utils/dates.js';
+import { formatDateTime } from '../../utils/dates.js';
 import { Badge } from '../../components/ui/Badge.jsx';
 import { Button } from '../../components/ui/Button.jsx';
 import { EmptyState } from '../../components/ui/EmptyState.jsx';
@@ -32,7 +32,7 @@ export function RegistrationHistoryPage() {
     try {
       cancelRegistration(regId, title);
       toast.info('Registration has been cancelled.');
-    } catch (err) {
+    } catch {
       toast.error('Failed to cancel registration.');
     }
   };
@@ -48,7 +48,7 @@ export function RegistrationHistoryPage() {
         </div>
 
         {/* Filter buttons */}
-        <div className="flex gap-2">
+        <div className="reg-history-filter-row">
           {['all', 'confirmed', 'attended', 'cancelled'].map((tab) => (
             <button
               key={tab}
@@ -56,7 +56,8 @@ export function RegistrationHistoryPage() {
               className="btn btn-sm"
               style={{
                 backgroundColor: filter === tab ? 'var(--primary)' : 'var(--bg-surface)',
-                color: filter === tab ? '#ffffff' : 'var(--text-secondary)',
+                color: filter === tab ? '#101820' : 'var(--text-secondary)',
+                fontWeight: filter === tab ? 700 : 500,
                 border: '1px solid var(--border-color)',
                 textTransform: 'capitalize',
               }}
@@ -77,31 +78,30 @@ export function RegistrationHistoryPage() {
             return (
               <div
                 key={reg.id}
-                className="card flex items-center justify-between flex-wrap gap-4"
-                style={{ padding: '1.25rem' }}
+                className="card reg-item-card"
               >
-                <div className="flex items-center gap-4">
+                <div className="reg-item-card__main">
                   <img
                     src={event.bannerUrl}
                     alt={event.title}
-                    style={{ width: 84, height: 60, borderRadius: 'var(--radius-md)', objectFit: 'cover' }}
+                    className="reg-item-card__thumb"
                   />
-                  <div>
+                  <div className="reg-item-card__info">
                     <div className="flex items-center gap-2" style={{ marginBottom: '0.2rem' }}>
                       {isConfirmed && <Badge variant="success">Confirmed</Badge>}
                       {isAttended && <Badge variant="info">Attended</Badge>}
                       {isCancelled && <Badge variant="neutral">Cancelled</Badge>}
                     </div>
-                    <h3 style={{ fontSize: '1rem', fontWeight: 700 }}>
+                    <h3>
                       <Link to={`/events/${event.id}`}>{event.title}</Link>
                     </h3>
-                    <p className="text-xs text-secondary">
+                    <p className="text-xs text-secondary" style={{ marginTop: '0.25rem' }}>
                       Date: {formatDateTime(event.startAt)} • Venue: {event.venue}
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-4">
+                <div className="reg-item-card__actions">
                   <div className="text-right text-xs">
                     <span className="text-secondary block">Confirmation Code</span>
                     <strong style={{ letterSpacing: '0.05em', color: 'var(--primary)', fontSize: '0.9rem' }}>

@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { Sparkles, User, Shield, Layers, GraduationCap, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { useState } from 'react';
+import { Link, useNavigate, useSearchParams, Navigate } from 'react-router-dom';
+import { Sparkles, Shield, Layers, GraduationCap, ArrowRight, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { DEMO_ACCOUNTS } from '../../data/demoAccounts.js';
 import { Input } from '../../components/ui/Input.jsx';
 import { Button } from '../../components/ui/Button.jsx';
 import { useToast } from '../../components/ui/Toast.jsx';
+import { validateEmail } from '../../utils/validation.js';
 
 export function LoginPage() {
-  const { login, loginAsDemo } = useAuth();
+  const { user, isAuthenticated, login, loginAsDemo } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const toast = useToast();
@@ -18,53 +19,80 @@ export function LoginPage() {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [loadingDemoRole, setLoadingDemoRole] = useState(null);
 
   const getDestination = (role) => {
-    if (redirectUrl) return redirectUrl;
-    if (role === 'admin') return '/admin/dashboard';
-    if (role === 'organizer') return '/organizer/dashboard';
-    return '/student/dashboard';
+    const roleDashboard = role === 'admin'
+      ? '/admin/dashboard'
+      : role === 'organizer'
+        ? '/organizer/dashboard'
+        : '/student/dashboard';
+    const requiredRole = redirectUrl.match(/^\/(admin|organizer|student)(?:\/|$)/)?.[1];
+    const isLocalPath = redirectUrl.startsWith('/') && !redirectUrl.startsWith('//');
+
+    if (isLocalPath && (!requiredRole || requiredRole === role)) return redirectUrl;
+    return roleDashboard;
   };
+
+  if (isAuthenticated && user) {
+    return <Navigate to={getDestination(user.role)} replace />;
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (loading) return;
     setError('');
-    if (!email || !password) {
+
+    if (!email.trim() || !password) {
       setError('Please provide both email and password.');
+      return;
+    }
+
+    const emailErr = validateEmail(email);
+    if (emailErr) {
+      setError(emailErr);
       return;
     }
 
     try {
       setLoading(true);
-      const user = await login(email, password);
-      toast.success(`Welcome back, ${user.name}!`);
-      navigate(getDestination(user.role));
+      const loggedInUser = await login(email, password);
+      setPassword('');
+      toast.success(`Welcome back, ${loggedInUser.name}!`);
+      navigate(getDestination(loggedInUser.role), { replace: true });
     } catch (err) {
       setError(err.message || 'Login failed.');
+      setPassword('');
     } finally {
       setLoading(false);
     }
   };
 
   const handleQuickDemoLogin = async (role) => {
+    if (loading) return;
     setError('');
+    setLoadingDemoRole(role);
     try {
       setLoading(true);
-      const user = await loginAsDemo(role);
-      toast.success(`Logged in as ${user.name} (${user.role.toUpperCase()})`);
-      navigate(getDestination(user.role));
+      const demoUser = await loginAsDemo(role);
+      setPassword('');
+      toast.success(`Logged in as ${demoUser.name} (${demoUser.role.toUpperCase()})`);
+      navigate(getDestination(demoUser.role), { replace: true });
     } catch (err) {
       setError(err.message || 'Demo login failed.');
+      setPassword('');
     } finally {
+      setLoadingDemoRole(null);
       setLoading(false);
     }
   };
 
   return (
-    <div className="container" style={{ padding: '3.5rem 1rem', maxWidth: '540px' }}>
-      <div className="card" style={{ padding: '2.5rem' }}>
+    <div className="container auth-page login-page">
+      <div className="card auth-card login-card">
         {/* Header */}
         <div className="text-center" style={{ marginBottom: '2rem' }}>
           <div
@@ -99,7 +127,7 @@ export function LoginPage() {
             marginBottom: '1.75rem',
           }}
         >
-          <div className="flex items-center justify-between" style={{ marginBottom: '0.75rem' }}>
+          <div className="login-demo-heading flex items-center justify-between" style={{ marginBottom: '0.75rem' }}>
             <span style={{ fontSize: '0.8rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--primary)' }}>
               1-Click Demo Accounts
             </span>
@@ -114,7 +142,10 @@ export function LoginPage() {
                   key={acc.role}
                   type="button"
                   onClick={() => handleQuickDemoLogin(acc.role)}
-                  className="btn btn-secondary w-full"
+                  className={`btn btn-secondary w-full login-demo-account${preselectedRole === acc.role ? ' is-preselected' : ''}`}
+                  disabled={loading}
+                  aria-busy={loading && loadingDemoRole === acc.role}
+                  aria-label={`Sign in as ${acc.role}: ${acc.name}${preselectedRole === acc.role ? ', selected role' : ''}`}
                   style={{
                     justifyContent: 'space-between',
                     padding: '0.65rem 0.95rem',
@@ -122,7 +153,7 @@ export function LoginPage() {
                     textAlign: 'left',
                   }}
                 >
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 login-demo-account__identity">
                     <div
                       style={{
                         padding: '0.45rem',
@@ -133,7 +164,7 @@ export function LoginPage() {
                     >
                       <RoleIcon size={16} />
                     </div>
-                    <div>
+                    <div className="login-demo-account__details">
                       <div style={{ fontSize: '0.85rem', fontWeight: 600 }}>
                         {acc.name}
                       </div>
@@ -142,7 +173,7 @@ export function LoginPage() {
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 login-demo-account__trailing">
                     <div
                       style={{
                         position: 'relative',
@@ -171,7 +202,11 @@ export function LoginPage() {
                         />
                       )}
                     </div>
-                    <ArrowRight size={15} color="var(--text-muted)" />
+                    {loading && loadingDemoRole === acc.role ? (
+                      <span className="spinner" aria-hidden="true" style={{ width: 15, height: 15 }} />
+                    ) : (
+                      <ArrowRight size={15} color="var(--text-muted)" />
+                    )}
                   </div>
                 </button>
               );
@@ -179,7 +214,7 @@ export function LoginPage() {
           </div>
         </div>
 
-        <div className="flex items-center gap-3" style={{ margin: '1.5rem 0' }}>
+        <div className="login-divider flex items-center gap-3" style={{ margin: '1.5rem 0' }}>
           <div style={{ flex: 1, height: 1, backgroundColor: 'var(--border-color)' }} />
           <span className="text-xs text-muted" style={{ fontWeight: 600 }}>OR ENTER CREDENTIALS</span>
           <div style={{ flex: 1, height: 1, backgroundColor: 'var(--border-color)' }} />
@@ -187,6 +222,8 @@ export function LoginPage() {
 
         {error && (
           <div
+            role="alert"
+            aria-live="polite"
             style={{
               padding: '0.85rem',
               backgroundColor: 'var(--error-light)',
@@ -200,33 +237,52 @@ export function LoginPage() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit}>
+        <form className="login-form" onSubmit={handleSubmit}>
           <Input
             label="Email address"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="manav@gmail.com"
+            placeholder="manav@chitkara.edu.in"
             required
           />
 
-          <Input
-            label="Password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="••••••••"
-            required
-          />
+          <div className="form-group">
+            <label htmlFor="login-password" className="form-label">
+              <span>Password <span style={{ color: 'var(--error)' }}>*</span></span>
+            </label>
+            <div className="input-password-wrap">
+              <input
+                id="login-password"
+                type={showPassword ? 'text' : 'password'}
+                className="form-input"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                required
+                autoComplete="current-password"
+              />
+              <button
+                type="button"
+                className="input-password-toggle"
+                onClick={() => setShowPassword((prev) => !prev)}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                aria-pressed={showPassword}
+                tabIndex={-1}
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
+          </div>
 
-          <div className="flex items-center justify-between" style={{ marginBottom: '1.5rem' }}>
+          <div className="login-password-helper flex items-center justify-between" style={{ marginBottom: '1.5rem' }}>
             <span className="text-xs text-muted">Demo default password: password123</span>
             <Link to="/forgot-password" className="text-xs font-medium text-primary">
               Forgot password?
             </Link>
           </div>
 
-          <Button type="submit" variant="primary" className="w-full" loading={loading}>
+          <Button type="submit" variant="primary" className="w-full" loading={loading} aria-busy={loading}>
             Sign In
           </Button>
         </form>

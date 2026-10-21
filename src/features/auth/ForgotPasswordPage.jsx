@@ -1,19 +1,33 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { KeyRound, CheckCircle2, ArrowLeft } from 'lucide-react';
+import { useState } from 'react';
+import { Link, Navigate } from 'react-router-dom';
+import { KeyRound, CheckCircle2, ArrowLeft, Eye, EyeOff } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext.jsx';
 import { Input } from '../../components/ui/Input.jsx';
 import { Button } from '../../components/ui/Button.jsx';
 import { authService } from '../../services/authService.js';
-import { validateEmail } from '../../utils/validation.js';
+import { validateEmail, validatePassword } from '../../utils/validation.js';
 
 export function ForgotPasswordPage() {
+  const { user, isAuthenticated } = useAuth();
   const [email, setEmail] = useState('');
   const [newPassword, setNewPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  if (isAuthenticated && user) {
+    const roleDashboard = user.role === 'admin'
+      ? '/admin/dashboard'
+      : user.role === 'organizer'
+        ? '/organizer/dashboard'
+        : '/student/dashboard';
+    return <Navigate to={roleDashboard} replace />;
+  }
 
   const handleReset = (e) => {
     e.preventDefault();
+    if (loading) return;
     setError('');
 
     const emailErr = validateEmail(email);
@@ -22,22 +36,28 @@ export function ForgotPasswordPage() {
       return;
     }
 
-    if (!newPassword || newPassword.length < 6) {
-      setError('Please provide a new demo password of at least 6 characters.');
+    const passErr = validatePassword(newPassword);
+    if (passErr) {
+      setError(passErr);
       return;
     }
 
     try {
+      setLoading(true);
       authService.simulateResetPassword(email, newPassword);
+      setNewPassword('');
       setSubmitted(true);
     } catch (err) {
       setError(err.message || 'Password reset simulation failed.');
+      setNewPassword('');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="container" style={{ padding: '3.5rem 1rem', maxWidth: '520px' }}>
-      <div className="card" style={{ padding: '2.5rem' }}>
+    <div className="container auth-page">
+      <div className="card auth-card">
         <div className="text-center" style={{ marginBottom: '2rem' }}>
           <div
             style={{
@@ -88,6 +108,8 @@ export function ForgotPasswordPage() {
           <form onSubmit={handleReset}>
             {error && (
               <div
+                role="alert"
+                aria-live="polite"
                 style={{
                   padding: '0.85rem',
                   backgroundColor: 'var(--error-light)',
@@ -106,18 +128,38 @@ export function ForgotPasswordPage() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="manav@gmail.com"
+              placeholder="manav@chitkara.edu.in"
               required
+              autoComplete="email"
             />
 
-            <Input
-              label="New Demo Password"
-              type="password"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              placeholder="At least 6 characters"
-              required
-            />
+            <div className="form-group">
+              <label htmlFor="reset-new-password" className="form-label">
+                <span>New Demo Password <span style={{ color: 'var(--error)' }}>*</span></span>
+              </label>
+              <div className="input-password-wrap">
+                <input
+                  id="reset-new-password"
+                  type={showPassword ? 'text' : 'password'}
+                  className="form-input"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  placeholder="At least 6 characters"
+                  required
+                  autoComplete="new-password"
+                />
+                <button
+                  type="button"
+                  className="input-password-toggle"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  aria-pressed={showPassword}
+                  tabIndex={-1}
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
+            </div>
 
             <div
               style={{
@@ -132,7 +174,7 @@ export function ForgotPasswordPage() {
               <strong>Notice:</strong> This is a browser demonstration. No real emails or SMS are dispatched. The stored demo account credential is updated in your local browser storage.
             </div>
 
-            <Button type="submit" variant="primary" className="w-full">
+            <Button type="submit" variant="primary" className="w-full" loading={loading} aria-busy={loading}>
               Update Demo Password
             </Button>
 

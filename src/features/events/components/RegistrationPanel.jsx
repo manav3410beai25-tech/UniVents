@@ -1,5 +1,4 @@
-import React from 'react';
-import { Calendar, Users, Clock, AlertTriangle, CheckCircle2, DollarSign, LogIn } from 'lucide-react';
+import { Clock, CheckCircle2 } from 'lucide-react';
 import { Button } from '../../../components/ui/Button.jsx';
 import { useAuth } from '../../../context/AuthContext.jsx';
 import { useEvents } from '../../../context/EventContext.jsx';
@@ -52,7 +51,7 @@ export function RegistrationPanel({ event }) {
   };
 
   return (
-    <div className="card" style={{ position: 'sticky', top: '90px' }}>
+    <div className="card registration-panel-card">
       <div className="flex items-center justify-between" style={{ marginBottom: '1.25rem' }}>
         <div>
           <span className="text-xs text-secondary font-medium">Admission</span>

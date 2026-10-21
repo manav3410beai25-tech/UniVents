@@ -1,5 +1,4 @@
-import React from 'react';
-import { Bell, CheckCheck, Clock, Calendar, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Bell, CheckCheck, CheckCircle2, AlertCircle } from 'lucide-react';
 import { useNotifications } from '../../context/NotificationContext.jsx';
 import { formatRelativeTime } from '../../utils/dates.js';
 import { Button } from '../../components/ui/Button.jsx';
@@ -33,14 +32,13 @@ export function NotificationsPage() {
             return (
               <div
                 key={notif.id}
-                className="card flex items-start justify-between gap-4"
+                className="card notification-item"
                 style={{
-                  padding: '1.25rem',
                   backgroundColor: isUnread ? 'var(--bg-surface)' : 'var(--bg-subtle)',
                   borderLeft: isUnread ? '4px solid var(--primary)' : '1px solid var(--border-color)',
                 }}
               >
-                <div className="flex items-start gap-3.5">
+                <div className="flex items-start gap-3.5 min-w-0 flex-1">
                   <div
                     style={{
                       padding: '0.65rem',
@@ -69,8 +67,8 @@ export function NotificationsPage() {
                     )}
                   </div>
 
-                  <div>
-                    <div className="flex items-center gap-2">
+                  <div className="notification-item__body">
+                    <div className="flex items-center gap-2 flex-wrap">
                       <h4 style={{ fontSize: '0.95rem', fontWeight: isUnread ? 700 : 600 }}>
                         {notif.title}
                       </h4>
@@ -82,7 +80,9 @@ export function NotificationsPage() {
                             borderRadius: '50%',
                             backgroundColor: 'var(--primary)',
                             display: 'inline-block',
+                            flexShrink: 0,
                           }}
+                          aria-label="Unread"
                         />
                       )}
                     </div>
@@ -98,7 +98,7 @@ export function NotificationsPage() {
                 {isUnread && (
                   <button
                     onClick={() => markAsRead(notif.id)}
-                    className="btn btn-ghost btn-sm text-xs"
+                    className="btn btn-ghost btn-sm text-xs flex-shrink-0"
                     style={{ whiteSpace: 'nowrap' }}
                   >
                     Mark read

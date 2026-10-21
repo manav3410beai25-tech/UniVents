@@ -1,4 +1,3 @@
-import React from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import {
   Calendar,
@@ -7,17 +6,14 @@ import {
   Share2,
   Bookmark,
   BookmarkCheck,
-  Tag,
   ArrowLeft,
-  Users,
-  ShieldAlert,
-  Sparkles
+  ShieldAlert
 } from 'lucide-react';
 import { useEvents } from '../../context/EventContext.jsx';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { useToast } from '../../components/ui/Toast.jsx';
-import { formatDateTime, formatDateOnly, formatTimeOnly } from '../../utils/dates.js';
-import { EventStatusBadge, Badge } from '../../components/ui/Badge.jsx';
+import { formatDateOnly, formatTimeOnly } from '../../utils/dates.js';
+import { EventStatusBadge } from '../../components/ui/Badge.jsx';
 import { RegistrationPanel } from './components/RegistrationPanel.jsx';
 import { Button } from '../../components/ui/Button.jsx';
 
@@ -91,9 +87,9 @@ export function EventDetailsPage() {
   };
 
   return (
-    <div className="container" style={{ padding: '2.5rem 1rem 5rem 1rem' }}>
+    <div className="container event-detail-page">
       {/* Back button link */}
-      <div style={{ marginBottom: '1.5rem' }}>
+      <div className="event-detail__back">
         <Link to="/events" className="flex items-center gap-2 text-sm text-secondary hover:text-primary">
           <ArrowLeft size={16} />
           <span>Back to Explore Events</span>
@@ -101,39 +97,16 @@ export function EventDetailsPage() {
       </div>
 
       {/* Hero Banner Header */}
-      <div
-        className="card"
-        style={{
-          padding: 0,
-          overflow: 'hidden',
-          marginBottom: '2.5rem',
-          position: 'relative',
-        }}
-      >
-        <div style={{ position: 'relative', height: '360px', backgroundColor: '#0f172a' }}>
+      <div className="card event-detail__card">
+        <div className="event-detail__banner">
           <img
             src={event.bannerUrl}
             alt={event.title}
-            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
           />
-          <div
-            style={{
-              position: 'absolute',
-              inset: 0,
-              background: 'linear-gradient(180deg, rgba(15, 23, 42, 0.2) 0%, rgba(15, 23, 42, 0.85) 100%)',
-            }}
-          />
+          <div className="event-detail__banner-overlay" />
 
           {/* Banner Overlays */}
-          <div
-            style={{
-              position: 'absolute',
-              bottom: '1.75rem',
-              left: '2rem',
-              right: '2rem',
-              color: '#ffffff',
-            }}
-          >
+          <div className="event-detail__banner-content">
             <div className="flex items-center gap-2" style={{ marginBottom: '0.75rem' }}>
               {category && (
                 <span
@@ -152,26 +125,13 @@ export function EventDetailsPage() {
               <EventStatusBadge status={event.status} />
             </div>
 
-            <h1
-              style={{
-                fontSize: 'clamp(1.5rem, 3.5vw, 2.5rem)',
-                fontWeight: 800,
-                lineHeight: 1.2,
-                color: '#ffffff',
-                textShadow: '0 2px 4px rgba(0, 0, 0, 0.4)',
-              }}
-            >
-              {event.title}
-            </h1>
+            <h1>{event.title}</h1>
           </div>
         </div>
 
         {/* Action bar below banner */}
-        <div
-          className="flex items-center justify-between flex-wrap gap-3"
-          style={{ padding: '1rem 2rem', backgroundColor: 'var(--bg-surface)' }}
-        >
-          <div className="flex items-center gap-6 text-sm text-secondary">
+        <div className="event-detail__action-bar">
+          <div className="event-detail__meta-list">
             <div className="flex items-center gap-2">
               <Calendar size={16} color="var(--primary)" />
               <span>{formatDateOnly(event.startAt)}</span>
@@ -203,14 +163,7 @@ export function EventDetailsPage() {
       </div>
 
       {/* Main 2-Column Content Grid */}
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'minmax(0, 1fr) 340px',
-          gap: '2.5rem',
-          alignItems: 'start',
-        }}
-      >
+      <div className="event-detail__grid">
         {/* Left Column: Details, Agenda, Tags */}
         <div className="flex flex-col gap-6">
           <div className="card">

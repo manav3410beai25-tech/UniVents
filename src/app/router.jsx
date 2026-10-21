@@ -1,10 +1,9 @@
-import React from 'react';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 
 // Layouts & Guards
 import { PublicLayout } from '../components/layout/PublicLayout.jsx';
 import { DashboardLayout } from '../components/layout/DashboardLayout.jsx';
-import { ProtectedRoute, AccessDeniedPage, NotFoundPage } from './guards.jsx';
+import { ProtectedRoute, GuestRoute, AccessDeniedPage, NotFoundPage } from './guards.jsx';
 
 // Public & Auth Pages
 import { HomePage } from '../features/events/HomePage.jsx';
@@ -14,6 +13,8 @@ import { LoginPage } from '../features/auth/LoginPage.jsx';
 import { SignupPage } from '../features/auth/SignupPage.jsx';
 import { ForgotPasswordPage } from '../features/auth/ForgotPasswordPage.jsx';
 import { ProfilePage } from '../features/auth/ProfilePage.jsx';
+import { AboutPage } from '../features/public/AboutPage.jsx';
+import { ContactPage } from '../features/public/ContactPage.jsx';
 
 // Student Pages
 import { StudentDashboard } from '../features/student/StudentDashboard.jsx';
@@ -42,9 +43,30 @@ export const router = createBrowserRouter([
       { index: true, element: <HomePage /> },
       { path: 'events', element: <ExploreEventsPage /> },
       { path: 'events/:eventId', element: <EventDetailsPage /> },
-      { path: 'login', element: <LoginPage /> },
-      { path: 'signup', element: <SignupPage /> },
-      { path: 'forgot-password', element: <ForgotPasswordPage /> },
+      {
+        path: 'login',
+        element: (
+          <GuestRoute>
+            <LoginPage />
+          </GuestRoute>
+        ),
+      },
+      {
+        path: 'signup',
+        element: (
+          <GuestRoute>
+            <SignupPage />
+          </GuestRoute>
+        ),
+      },
+      {
+        path: 'forgot-password',
+        element: (
+          <GuestRoute>
+            <ForgotPasswordPage />
+          </GuestRoute>
+        ),
+      },
       {
         path: 'profile',
         element: (
@@ -53,6 +75,8 @@ export const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
+      { path: 'about', element: <AboutPage /> },
+      { path: 'contact', element: <ContactPage /> },
       { path: '403', element: <AccessDeniedPage /> },
       { path: '*', element: <NotFoundPage /> },
     ],

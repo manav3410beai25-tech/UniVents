@@ -1,6 +1,6 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Search, Calendar, Frown } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { useEvents } from '../../context/EventContext.jsx';
 import { EventCard } from './components/EventCard.jsx';
 import { EventFilters } from './components/EventFilters.jsx';
@@ -9,23 +9,81 @@ import { EmptyState } from '../../components/ui/EmptyState.jsx';
 export function ExploreEventsPage() {
   const { events, categories, getEventCapacityStats } = useEvents();
   const [searchParams, setSearchParams] = useSearchParams();
+  const [now] = useState(() => Date.now());
 
-  // Filters state initialized from URL if present
-  const [search, setSearch] = useState(searchParams.get('q') || '');
-  const [category, setCategory] = useState(searchParams.get('category') || '');
+  // URL searchParams is the single source of truth for category
+  const category = searchParams.get('category') || '';
+
+  // Synchronize search input with URL search param
+  const currentUrlQuery = searchParams.get('q') || '';
+  const [search, setSearch] = useState(currentUrlQuery);
+  const [prevUrlQuery, setPrevUrlQuery] = useState(currentUrlQuery);
+
+  if (prevUrlQuery !== currentUrlQuery) {
+    setPrevUrlQuery(currentUrlQuery);
+    setSearch(currentUrlQuery);
+  }
+
   const [dateFilter, setDateFilter] = useState('upcoming'); // default show upcoming
   const [priceFilter, setPriceFilter] = useState('all');
   const [availabilityFilter, setAvailabilityFilter] = useState('all');
   const [sortBy, setSortBy] = useState('upcoming');
 
-  // Clear all filters
+  // Resolve canonical category object across slugs, IDs, and display names
+  const activeCategoryObj = useMemo(() => {
+    if (!category) return null;
+    const norm = category.trim().toLowerCase();
+    return (
+      categories.find(
+        (c) =>
+          (c.slug && c.slug.toLowerCase() === norm) ||
+          c.id.toLowerCase() === norm ||
+          c.name.toLowerCase() === norm
+      ) || null
+    );
+  }, [category, categories]);
+
+  // Update category and sync to URL
+  const handleCategoryChange = (newCat) => {
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        if (newCat) {
+          next.set('category', newCat);
+        } else {
+          next.delete('category');
+        }
+        return next;
+      },
+      { replace: true }
+    );
+  };
+
+  // Update search query and sync to URL
+  const handleSearchChange = (newSearch) => {
+    setSearch(newSearch);
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        if (newSearch.trim()) {
+          next.set('q', newSearch.trim());
+        } else {
+          next.delete('q');
+        }
+        return next;
+      },
+      { replace: true }
+    );
+  };
+
+  // Clear all filters and remove query params from URL
   const handleClearFilters = () => {
     setSearch('');
-    setCategory('');
     setDateFilter('all');
     setPriceFilter('all');
     setAvailabilityFilter('all');
     setSortBy('upcoming');
+    setSearchParams({}, { replace: true });
   };
 
   // Published events only (spec rule: do not expose drafts, pending, or rejected)
@@ -35,8 +93,6 @@ export function ExploreEventsPage() {
 
   // Filter & Search logic
   const filteredEvents = useMemo(() => {
-    const now = Date.now();
-
     return publishedEvents
       .filter((evt) => {
         // Text Search (title, description, venue, tags)
@@ -51,8 +107,13 @@ export function ExploreEventsPage() {
 
         // Category Filter
         if (category) {
-          const catObj = categories.find((c) => c.slug === category || c.id === category);
-          if (catObj && evt.categoryId !== catObj.id) return false;
+          if (activeCategoryObj) {
+            if (evt.categoryId !== activeCategoryObj.id) return false;
+          } else {
+            // Category was specified but matches no known category
+            const norm = category.trim().toLowerCase();
+            if (evt.categoryId.toLowerCase() !== norm) return false;
+          }
         }
 
         // Date Filter
@@ -104,18 +165,19 @@ export function ExploreEventsPage() {
     publishedEvents,
     search,
     category,
+    activeCategoryObj,
     dateFilter,
     priceFilter,
     availabilityFilter,
     sortBy,
-    categories,
     getEventCapacityStats,
+    now,
   ]);
 
   return (
-    <div className="container" style={{ padding: '3rem 1rem' }}>
-      <div style={{ marginBottom: '2rem' }}>
-        <h1 style={{ fontSize: '2rem', fontWeight: 800 }}>Explore Campus Events</h1>
+    <div className="container events-page">
+      <div className="events-header">
+        <h1>Explore Campus Events</h1>
         <p className="text-secondary text-sm">
           Browse upcoming lectures, hackathons, job fairs, workshops and club gatherings.
         </p>
@@ -123,9 +185,9 @@ export function ExploreEventsPage() {
 
       <EventFilters
         search={search}
-        setSearch={setSearch}
-        category={category}
-        setCategory={setCategory}
+        setSearch={handleSearchChange}
+        category={activeCategoryObj ? (activeCategoryObj.slug || activeCategoryObj.id) : category}
+        setCategory={handleCategoryChange}
         categories={categories.filter((c) => c.isActive)}
         dateFilter={dateFilter}
         setDateFilter={setDateFilter}
@@ -147,13 +209,7 @@ export function ExploreEventsPage() {
 
       {/* Results Grid or Empty State */}
       {filteredEvents.length > 0 ? (
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
-            gap: '1.75rem',
-          }}
-        >
+        <div className="events-results-grid">
           {filteredEvents.map((evt) => (
             <EventCard key={evt.id} event={evt} />
           ))}

@@ -1,12 +1,9 @@
-import React from 'react';
-import { Bookmark, Search } from 'lucide-react';
-import { useAuth } from '../../context/AuthContext.jsx';
+import { Bookmark } from 'lucide-react';
 import { useEvents } from '../../context/EventContext.jsx';
 import { EventCard } from '../events/components/EventCard.jsx';
 import { EmptyState } from '../../components/ui/EmptyState.jsx';
 
 export function SavedEventsPage() {
-  const { user } = useAuth();
   const { events, savedEventIds } = useEvents();
 
   const savedEvents = events.filter((e) => savedEventIds.includes(e.id));
@@ -21,13 +18,7 @@ export function SavedEventsPage() {
       </div>
 
       {savedEvents.length > 0 ? (
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
-            gap: '1.75rem',
-          }}
-        >
+        <div className="saved-events-grid">
           {savedEvents.map((evt) => (
             <EventCard key={evt.id} event={evt} />
           ))}

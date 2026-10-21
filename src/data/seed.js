@@ -1,9 +1,9 @@
 import { DEMO_ACCOUNTS } from './demoAccounts.js';
 
-function seedDemoAccount(id, role, interests, createdAt) {
+function seedDemoAccount(role, interests, createdAt) {
   const account = DEMO_ACCOUNTS.find((demoAccount) => demoAccount.role === role);
   return {
-    id,
+    id: account.id,
     name: account.name,
     email: account.email,
     password: account.password,
@@ -16,7 +16,7 @@ function seedDemoAccount(id, role, interests, createdAt) {
 }
 
 export const SEED_USERS = [
-  seedDemoAccount('user_student_1', 'student', ['Technical', 'Hackathons', 'Design', 'Workshops'], '2026-08-15T09:00:00Z'),
+  seedDemoAccount('student', ['Technical', 'Hackathons', 'Design', 'Workshops'], '2026-08-15T09:00:00Z'),
   {
     id: 'user_student_2',
     name: 'Jordan Chen',
@@ -28,7 +28,7 @@ export const SEED_USERS = [
     interests: ['Career', 'Sports', 'Cultural'],
     createdAt: '2026-08-20T10:30:00Z',
   },
-  seedDemoAccount('user_organizer_1', 'organizer', ['Technical', 'Workshops', 'Hackathons'], '2026-07-10T11:00:00Z'),
+  seedDemoAccount('organizer', ['Technical', 'Workshops', 'Hackathons'], '2026-07-10T11:00:00Z'),
   {
     id: 'user_organizer_2',
     name: 'David Okafor',
@@ -40,7 +40,7 @@ export const SEED_USERS = [
     interests: ['Cultural', 'Design', 'Sports'],
     createdAt: '2026-07-15T14:20:00Z',
   },
-  seedDemoAccount('user_admin_1', 'admin', ['Administration', 'Policy'], '2026-06-01T08:00:00Z'),
+  seedDemoAccount('admin', ['Administration', 'Policy'], '2026-06-01T08:00:00Z'),
 ];
 
 export const SEED_CATEGORIES = [

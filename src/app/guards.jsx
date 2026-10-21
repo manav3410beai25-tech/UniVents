@@ -1,5 +1,4 @@
-import React from 'react';
-import { Navigate, useLocation, Link } from 'react-router-dom';
+import { Navigate, useLocation, useSearchParams, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import { ShieldAlert } from 'lucide-react';
 import { Button } from '../components/ui/Button.jsx';
@@ -14,6 +13,26 @@ export function ProtectedRoute({ children, allowedRoles = [] }) {
 
   if (allowedRoles.length > 0 && !allowedRoles.includes(user.role)) {
     return <Navigate to="/403" replace />;
+  }
+
+  return children;
+}
+
+export function GuestRoute({ children }) {
+  const { user, isAuthenticated } = useAuth();
+  const [searchParams] = useSearchParams();
+
+  if (isAuthenticated && user) {
+    const redirectUrl = searchParams.get('redirect') || '';
+    const roleDashboard = user.role === 'admin'
+      ? '/admin/dashboard'
+      : user.role === 'organizer'
+        ? '/organizer/dashboard'
+        : '/student/dashboard';
+    const requiredRole = redirectUrl.match(/^\/(admin|organizer|student)(?:\/|$)/)?.[1];
+    const isLocalPath = redirectUrl.startsWith('/') && !redirectUrl.startsWith('//');
+    const target = isLocalPath && (!requiredRole || requiredRole === user.role) ? redirectUrl : roleDashboard;
+    return <Navigate to={target} replace />;
   }
 
   return children;

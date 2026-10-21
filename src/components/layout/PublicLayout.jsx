@@ -1,4 +1,3 @@
-import React from 'react';
 import { Outlet } from 'react-router-dom';
 import { PublicNavbar, PublicFooter } from './PublicNavbar.jsx';
 import { MobileBottomNav } from './MobileBottomNav.jsx';

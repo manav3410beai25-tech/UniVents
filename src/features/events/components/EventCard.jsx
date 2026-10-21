@@ -1,9 +1,7 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { Calendar, MapPin, Users, Bookmark, BookmarkCheck, ArrowRight } from 'lucide-react';
 import { formatDateOnly, formatTimeOnly } from '../../../utils/dates.js';
-import { formatCurrency } from '../../../utils/formatters.js';
-import { EventStatusBadge, Badge } from '../../../components/ui/Badge.jsx';
+import { EventStatusBadge } from '../../../components/ui/Badge.jsx';
 import { useEvents } from '../../../context/EventContext.jsx';
 import { useAuth } from '../../../context/AuthContext.jsx';
 
@@ -13,7 +11,7 @@ export function EventCard({ event, showStatus = false }) {
 
   const category = categories.find((c) => c.id === event.categoryId);
   const isSaved = savedEventIds.includes(event.id);
-  const { count, capacity, remaining, isFull } = getEventCapacityStats(event);
+  const { capacity, remaining, isFull } = getEventCapacityStats(event);
 
   const handleBookmark = (e) => {
     e.preventDefault();
@@ -37,7 +35,7 @@ export function EventCard({ event, showStatus = false }) {
       }}
     >
       {/* Banner with 16:9 ratio */}
-      <div style={{ position: 'relative', paddingTop: '56.25%', backgroundColor: '#1e293b' }}>
+      <div className="event-card__banner">
         <img
           src={event.bannerUrl}
           alt={event.title}
