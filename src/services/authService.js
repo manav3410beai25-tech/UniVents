@@ -20,21 +20,24 @@ export const authService = {
     localStorage.removeItem(STORAGE_KEYS.SESSION);
   },
 
-  login(email, password) {
+  login(email, password, portalMode = null) {
     const users = this.getUsers();
     const normalizedEmail = email.trim().toLowerCase();
     const demoAccount = DEMO_ACCOUNTS.find((account) => account.email.toLowerCase() === normalizedEmail);
 
+    let authenticatedUser;
+    let accountIndex = -1;
+
     // Demo accounts are canonical. Reconcile their seeded record when saved browser data is stale.
     if (demoAccount) {
-      const accountIndex = users.findIndex((storedUser) =>
+      accountIndex = users.findIndex((storedUser) =>
         storedUser.id === demoAccount.id || storedUser.email?.toLowerCase() === normalizedEmail
       );
       const existingAccount = accountIndex >= 0 ? users[accountIndex] : null;
       if (password !== demoAccount.password && password !== existingAccount?.password) {
         throw new Error('Invalid email or password. Please check your credentials or pick a demo account.');
       }
-      const sessionUser = {
+      authenticatedUser = {
         ...existingAccount,
         id: existingAccount?.id || demoAccount.id,
         name: demoAccount.name,
@@ -46,39 +49,39 @@ export const authService = {
         interests: existingAccount?.interests || demoAccount.interests,
         createdAt: existingAccount?.createdAt || new Date().toISOString(),
       };
+    } else {
+      const user = users.find(
+        (u) => u.email?.toLowerCase() === normalizedEmail && u.password === password
+      );
+      if (!user) {
+        throw new Error('Invalid email or password. Please check your credentials or pick a demo account.');
+      }
+      authenticatedUser = user;
+    }
 
-      if (accountIndex >= 0) users[accountIndex] = sessionUser;
-      else users.push(sessionUser);
+    // Portal validation (STRICT: checked BEFORE session is created or stored):
+    if (portalMode === 'student' && authenticatedUser.role !== 'student') {
+      throw new Error('This account belongs to the Organizer / Admin Portal. Please select the correct portal.');
+    }
+    if (portalMode === 'organizer-admin' && authenticatedUser.role === 'student') {
+      throw new Error('This account belongs to the Student Portal. Please select the correct portal.');
+    }
+
+    // If demo account reconciled, update stored users
+    if (demoAccount) {
+      if (accountIndex >= 0) users[accountIndex] = authenticatedUser;
+      else users.push(authenticatedUser);
       setStoredItem(STORAGE_KEYS.USERS, users);
-
-      const sessionData = {
-        id: sessionUser.id,
-        name: sessionUser.name,
-        email: sessionUser.email,
-        role: sessionUser.role,
-        department: sessionUser.department,
-        avatarUrl: sessionUser.avatarUrl,
-        interests: sessionUser.interests,
-      };
-      this.setCurrentSession(sessionData);
-      return sessionData;
     }
 
-    const user = users.find(
-      (u) => u.email?.toLowerCase() === normalizedEmail && u.password === password
-    );
-    if (!user) {
-      throw new Error('Invalid email or password. Please check your credentials or pick a demo account.');
-    }
-    const sessionUser = user;
     const sessionData = {
-      id: sessionUser.id,
-      name: sessionUser.name,
-      email: sessionUser.email,
-      role: sessionUser.role,
-      department: sessionUser.department,
-      avatarUrl: sessionUser.avatarUrl,
-      interests: sessionUser.interests || [],
+      id: authenticatedUser.id,
+      name: authenticatedUser.name,
+      email: authenticatedUser.email,
+      role: authenticatedUser.role,
+      department: authenticatedUser.department,
+      avatarUrl: authenticatedUser.avatarUrl,
+      interests: authenticatedUser.interests || [],
     };
     this.setCurrentSession(sessionData);
     return sessionData;

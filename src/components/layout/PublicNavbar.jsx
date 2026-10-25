@@ -45,15 +45,7 @@ export function PublicNavbar() {
 
   return (
     <>
-      <header
-        className="public-header"
-        style={{
-          height: 'var(--header-height)',
-          position: 'sticky',
-          top: 0,
-          zIndex: 40,
-        }}
-      >
+      <header className="public-header">
         <div className="container h-full flex items-center justify-between public-navbar__inner">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2" style={{ textDecoration: 'none' }}>
@@ -103,12 +95,16 @@ export function PublicNavbar() {
             {/* Quick Demo Reset Button */}
             <button
               onClick={() => setResetDialogOpen(true)}
-              className="btn btn-ghost btn-sm"
+              className="btn btn-ghost btn-sm public-nav__reset-btn"
               title="Reset Demo Data"
+              aria-label="Reset Demo Data"
               style={{ color: 'var(--text-secondary)' }}
             >
               <RotateCcw size={16} />
-              <span className="text-xs public-nav__reset-label">Reset Demo</span>
+              <span className="text-xs public-nav__reset-label">
+                <span className="public-nav__reset-text-long">Reset Demo</span>
+                <span className="public-nav__reset-text-short">Reset</span>
+              </span>
             </button>
 
             {/* Dark Mode Switcher */}
@@ -222,25 +218,11 @@ export function PublicNavbar() {
 
 export function PublicFooter() {
   return (
-    <footer
-      style={{
-        backgroundColor: 'var(--bg-surface)',
-        borderTop: '1px solid var(--border-color)',
-        padding: 'clamp(2rem, 5vw, 3rem) 0 2rem 0',
-        marginTop: 'auto',
-      }}
-    >
+    <footer className="public-footer">
       <div className="container">
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 220px), 1fr))',
-            gap: 'clamp(1.5rem, 4vw, 3rem)',
-            marginBottom: '2.5rem',
-          }}
-        >
+        <div className="public-footer__grid">
           {/* Column 1 — UniVents */}
-          <div style={{ maxWidth: 320 }}>
+          <div className="public-footer__brand-col">
             <div className="flex items-center gap-2" style={{ marginBottom: '0.75rem' }}>
               <span className="brand-mark" aria-hidden="true">
                 <img src={`${import.meta.env.BASE_URL}uselogo.jpg`} alt="" className="brand-mark__image" />
@@ -256,18 +238,18 @@ export function PublicFooter() {
           </div>
 
           {/* Column 2 — About & Support */}
-          <div>
-            <h4 style={{ fontSize: '0.95rem', fontWeight: 700, marginBottom: '0.85rem' }}>About &amp; Support</h4>
-            <div className="flex flex-col gap-2 text-sm text-secondary">
+          <div className="public-footer__col">
+            <h4 className="public-footer__heading">About &amp; Support</h4>
+            <div className="flex flex-col gap-2 text-sm text-secondary public-footer__links">
               <Link to="/about">About Us</Link>
               <Link to="/contact">Contact Us</Link>
             </div>
           </div>
 
           {/* Column 3 — Explore Campus */}
-          <div>
-            <h4 style={{ fontSize: '0.95rem', fontWeight: 700, marginBottom: '0.85rem' }}>Explore Campus</h4>
-            <div className="flex flex-col gap-2 text-sm text-secondary">
+          <div className="public-footer__col">
+            <h4 className="public-footer__heading">Explore Campus</h4>
+            <div className="flex flex-col gap-2 text-sm text-secondary public-footer__links">
               <Link to="/events">All Campus Events</Link>
               <Link to="/events?category=technical">Technical Workshops</Link>
               <Link to="/events?category=hackathons">Collegiate Hackathons</Link>
@@ -278,18 +260,7 @@ export function PublicFooter() {
         </div>
 
         {/* Bottom Row */}
-        <div
-          style={{
-            borderTop: '1px solid var(--border-color)',
-            paddingTop: '1.5rem',
-            display: 'flex',
-            flexWrap: 'wrap',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            gap: '1rem',
-          }}
-          className="text-xs text-secondary"
-        >
+        <div className="public-footer__bottom text-xs text-secondary">
           <span>© 2026 UniVents. All rights reserved.</span>
           <span style={{ opacity: 0.85 }}>Client-side demonstration mode</span>
         </div>

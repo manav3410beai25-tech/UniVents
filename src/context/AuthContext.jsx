@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 import { authService } from '../services/authService.js';
 import { DEMO_ACCOUNTS } from '../data/demoAccounts.js';
 
@@ -18,10 +18,10 @@ export function AuthProvider({ children }) {
     return () => window.removeEventListener('storage', handleStorage);
   }, []);
 
-  const login = async (email, password) => {
+  const login = async (email, password, portalMode = null) => {
     setLoading(true);
     try {
-      const sessionUser = authService.login(email, password);
+      const sessionUser = authService.login(email, password, portalMode);
       setUser(sessionUser);
       return sessionUser;
     } finally {
@@ -29,10 +29,10 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const loginAsDemo = async (role) => {
+  const loginAsDemo = async (role, portalMode = null) => {
     const account = DEMO_ACCOUNTS.find((a) => a.role === role);
     if (!account) throw new Error(`Demo account for ${role} not found.`);
-    return login(account.email, account.password);
+    return login(account.email, account.password, portalMode);
   };
 
   const signup = async (userData) => {
